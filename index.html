@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propuesta Estratégica - Queenchis | OPEN CLUB</title>
+    
+    <!-- TAILWIND CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- CONFIGURACIÓN DE COLORES OPEN CLUB -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ocd: {
+                            black: '#050505',
+                            green: '#00D64F',
+                            gray: '#F8F9FA',
+                            textMuted: '#656568',
+                            border: '#E5E7EB'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Space Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #f3f4f6; /* Fondo gris fuera del papel */
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Formato A4 para impresión y visualización */
+        .a4-page {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            margin: 2rem auto;
+            padding: 20mm;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+        }
+
+        /* Reglas de impresión */
+        @media print {
+            body { background-color: white; }
+            .a4-page {
+                width: 100%;
+                min-height: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+            }
+            .no-print { display: none !important; }
+            
+            /* Forzar colores de fondo e impresión exacta */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+        
+        /* Utilidades gráficas */
+        .clinical-border { border-left: 3px solid #00D64F; }
+    </style>
+</head>
+<body className="text-ocd-black font-sans">
+
+    <!-- BOTÓN FLOTANTE PARA EXPORTAR A PDF (Se oculta al imprimir) -->
+    <button 
+        onclick="window.print()" 
+        class="no-print fixed bottom-8 right-8 bg-ocd-black text-white px-6 py-3 rounded-full font-mono text-xs font-bold tracking-widest uppercase flex items-center gap-3 shadow-2xl hover:bg-ocd-green hover:text-black transition-colors z-50"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Exportar a PDF
+    </button>
+
+    <!-- DOCUMENTO A4 -->
+    <div class="a4-page text-sm text-gray-800">
+        
+        <!-- HEADER -->
+        <header class="flex justify-between items-end border-b-2 border-ocd-black pb-6 mb-10">
+            <div>
+                <div class="flex items-center gap-2 mb-1">
+                    <div class="w-3 h-3 bg-ocd-green rounded-full"></div>
+                    <h1 class="font-black text-3xl tracking-tighter text-ocd-black uppercase">OPEN CLUB</h1>
+                </div>
+                <div class="font-mono text-[9px] tracking-[0.25em] text-ocd-textMuted uppercase font-bold">
+                    System Infrastructure
+                </div>
+            </div>
+            <div class="text-right font-mono text-[10px] text-ocd-textMuted leading-relaxed">
+                <div>DOC_REF: OCD-PRP-QCH</div>
+                <div>FECHA: 21 ABR 2026</div>
+                <div class="text-ocd-green font-bold mt-1 bg-ocd-green/10 px-2 py-0.5 inline-block">STATUS: VALID</div>
+            </div>
+        </header>
+
+        <!-- TÍTULO DE DOCUMENTO -->
+        <div class="mb-10">
+            <h2 class="text-2xl font-bold tracking-tight text-ocd-black mb-3">Propuesta Técnica y Económica</h2>
+            <div class="font-mono text-xs bg-ocd-gray border border-ocd-border inline-block px-3 py-1.5 text-ocd-black font-bold tracking-widest uppercase">
+                CLIENTE: QUEENCHIS
+            </div>
+        </div>
+
+        <!-- RESUMEN FINANCIERO (KPIs) -->
+        <div class="grid grid-cols-3 gap-4 mb-12">
+            <div class="border border-ocd-border p-4 bg-white">
+                <div class="font-mono text-[9px] text-ocd-textMuted tracking-widest uppercase mb-2">Valor Hora Senior</div>
+                <div class="text-xl font-bold text-ocd-black">$25.000 <span class="text-sm font-normal text-gray-400">CLP</span></div>
+            </div>
+            <div class="border border-ocd-border p-4 bg-white">
+                <div class="font-mono text-[9px] text-ocd-textMuted tracking-widest uppercase mb-2">Inversión Total</div>
+                <div class="text-xl font-bold text-ocd-green">$450.000 <span class="text-sm font-normal text-gray-400">CLP</span></div>
+            </div>
+            <div class="border border-ocd-border p-4 bg-white">
+                <div class="font-mono text-[9px] text-ocd-textMuted tracking-widest uppercase mb-2">Esfuerzo Técnico</div>
+                <div class="text-xl font-bold text-ocd-black">18 <span class="text-sm font-normal text-gray-400">horas</span></div>
+            </div>
+        </div>
+
+        <!-- DESGLOSE DEL ROADMAP -->
+        <div class="mb-12">
+            <div class="font-mono text-[10px] text-ocd-green font-bold tracking-widest uppercase mb-2">/// ROADMAP DE EJECUCIÓN</div>
+            <h3 class="text-lg font-bold text-ocd-black mb-6 border-b border-ocd-border pb-2">Desglose por Fases</h3>
+
+            <!-- FASE 1 -->
+            <div class="mb-8">
+                <div class="flex justify-between items-center bg-ocd-gray px-4 py-2 border border-ocd-border mb-3">
+                    <div class="font-bold text-ocd-black">Fase 1: Identidad de Marca</div>
+                    <div class="font-mono text-xs text-ocd-textMuted font-bold">13 HRS</div>
+                </div>
+                <table class="w-full text-left text-sm">
+                    <tbody>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-3 pr-4 text-gray-600">Investigación y desarrollo de conceptos (2 opciones)</td>
+                            <td class="py-3 font-mono text-xs text-ocd-textMuted w-24 text-right">5 hrs</td>
+                            <td class="py-3 font-mono text-xs font-bold text-ocd-black w-28 text-right">$125.000</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-3 pr-4 text-gray-600">Refinamiento y versiones de logo (vertical, horizontal, sello)</td>
+                            <td class="py-3 font-mono text-xs text-ocd-textMuted w-24 text-right">3 hrs</td>
+                            <td class="py-3 font-mono text-xs font-bold text-ocd-black w-28 text-right">$75.000</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-3 pr-4 text-gray-600">Definición de cromatismo y sistema tipográfico</td>
+                            <td class="py-3 font-mono text-xs text-ocd-textMuted w-24 text-right">2 hrs</td>
+                            <td class="py-3 font-mono text-xs font-bold text-ocd-black w-28 text-right">$50.000</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-3 pr-4 text-gray-600">Presentación de marca y mockups de concepto</td>
+                            <td class="py-3 font-mono text-xs text-ocd-textMuted w-24 text-right">3 hrs</td>
+                            <td class="py-3 font-mono text-xs font-bold text-ocd-black w-28 text-right">$75.000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- FASE 2 -->
+            <div class="mb-4">
+                <div class="flex justify-between items-center bg-ocd-gray px-4 py-2 border border-ocd-border mb-3">
+                    <div class="font-bold text-ocd-black">Fase 2: Aplicaciones de Marca</div>
+                    <div class="font-mono text-xs text-ocd-textMuted font-bold">5 HRS</div>
+                </div>
+                <table class="w-full text-left text-sm">
+                    <tbody>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-3 pr-4 text-gray-600">Diseño de menú estratégico (digital e impreso)</td>
+                            <td class="py-3 font-mono text-xs text-ocd-textMuted w-24 text-right">3 hrs</td>
+                            <td class="py-3 font-mono text-xs font-bold text-ocd-black w-28 text-right">$75.000</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-3 pr-4 text-gray-600">Diseño de sticker y mockups de impresión</td>
+                            <td class="py-3 font-mono text-xs text-ocd-textMuted w-24 text-right">2 hrs</td>
+                            <td class="py-3 font-mono text-xs font-bold text-ocd-black w-28 text-right">$50.000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ENTREGABLES FINALES -->
+        <div class="mb-12">
+            <div class="font-mono text-[10px] text-ocd-green font-bold tracking-widest uppercase mb-2">/// HANDOFF</div>
+            <h3 class="text-lg font-bold text-ocd-black mb-4 border-b border-ocd-border pb-2">Entregables Finales</h3>
+            <ul class="space-y-3">
+                <li class="flex items-start gap-3">
+                    <svg class="w-4 h-4 text-ocd-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline stroke-width="3" points="20 6 9 17 4 12"></polyline></svg>
+                    <div>
+                        <span class="font-bold text-ocd-black">Logotipo oficial:</span> 
+                        <span class="text-gray-600">Formatos para impresión (AI, EPS, PDF) y web (PNG, JPG, SVG).</span>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <svg class="w-4 h-4 text-ocd-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline stroke-width="3" points="20 6 9 17 4 12"></polyline></svg>
+                    <div>
+                        <span class="font-bold text-ocd-black">Manual de marca (Esencial):</span> 
+                        <span class="text-gray-600">Guía técnica que incluye códigos de color, uso de fuentes, iconografía secundaria (perrita/asia) y dirección de estilo fotográfico para platos.</span>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <svg class="w-4 h-4 text-ocd-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline stroke-width="3" points="20 6 9 17 4 12"></polyline></svg>
+                    <div>
+                        <span class="font-bold text-ocd-black">Archivos de producción:</span> 
+                        <span class="text-gray-600">Documentos finales listos para envío a imprenta (menú y stickers).</span>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <svg class="w-4 h-4 text-ocd-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline stroke-width="3" points="20 6 9 17 4 12"></polyline></svg>
+                    <div>
+                        <span class="font-bold text-ocd-black">Visualización de marca:</span> 
+                        <span class="text-gray-600">3 mockups de alta fidelidad para referencia de montaje y redes.</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- CONDICIONES COMERCIALES -->
+        <div class="mb-10 bg-ocd-gray border border-ocd-border p-6 clinical-border">
+            <h3 class="font-mono text-[10px] font-bold tracking-widest text-ocd-black uppercase mb-4">Condiciones Comerciales del Sistema</h3>
+            <div class="space-y-4 text-sm text-gray-700">
+                <p>
+                    <strong class="text-ocd-black">Forma de pago:</strong> 50% abono inicial ($225.000 CLP) para reserva de agenda e inicialización de la Fase 1. El 50% restante se abona contra la entrega de los archivos finales (Handoff).
+                </p>
+                <p>
+                    <strong class="text-ocd-black">Gestión de cambios:</strong> El proceso incluye 3 rondas de revisiones estructurales. Las horas adicionales por solicitudes fuera del alcance inicial se facturarán al valor hora senior estándar especificado en este documento.
+                </p>
+                <p>
+                    <strong class="text-ocd-black text-ocd-green">Actualizaciones futuras (Upgrade):</strong> Finalizada esta etapa fundacional, queda disponible el acceso al <span class="font-mono text-xs font-bold text-ocd-black">Manual de Marca XL</span>, un upgrade que integra tono de voz narrativo, arquetipos de marca y manual avanzado de redes sociales.
+                </p>
+            </div>
+        </div>
+
+        <!-- FIRMAS -->
+        <div class="mt-16 flex justify-between items-end border-t border-gray-200 pt-8">
+            <div class="w-48">
+                <div class="border-b border-black mb-2 pb-6"></div>
+                <div class="font-bold text-ocd-black">Aprobación Cliente</div>
+                <div class="font-mono text-[10px] text-gray-400 mt-1">QUEENCHIS</div>
+            </div>
+            
+            <div class="text-center font-mono text-[10px] text-gray-400 tracking-widest uppercase">
+                SYSTEM.CLOSE()
+            </div>
+
+            <div class="w-48 text-right">
+                <div class="border-b border-black mb-2 pb-6 text-ocd-green font-mono text-xs">SIGNED_OCD</div>
+                <div class="font-bold text-ocd-black">Dirección de Arte</div>
+                <div class="font-mono text-[10px] text-gray-400 mt-1">OPEN CLUB DEPARTMENT</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script para inicializar automáticamente la impresión al cargar (Opcional, desactivado por defecto) -->
+    <script>
+        // Descomenta la siguiente línea si deseas que la ventana de impresión/PDF se abra automáticamente
+        // window.onload = () => window.print();
+    </script>
+</body>
+</html>  
