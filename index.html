@@ -153,7 +153,7 @@
                     { id: 'f1_0', name: 'Reunión: Briefing & definición', desc: 'Alineación de objetivos y marco estratégico del proyecto (sesión de cortesía).', hours: 0, days: 1, priceOverride: 0, isEssential: true },
                     { id: 'f1_1', name: 'Logo principal + sistema visual', desc: 'Desarrollo de 2 direcciones gráficas estratégicas y versiones oficiales.', hours: 14.0, days: 5, isEssential: true },
                     { id: 'f1_2', name: 'Manual de marca', desc: 'Guía técnica integral que consolida paleta de colores, familia tipográfica y normas de uso.', hours: 5.0, days: 2, priceOverride: 100000, isEssential: true },
-                    { id: 'f1_3', name: 'Señalética física', desc: 'Diseño técnico de señalización de marca para el local físico (ej. letrero de fachada o pizarras).', hours: 4.0, days: 2, isEssential: true },
+                    { id: 'f1_3', name: 'Señalética física (2 piezas)', desc: 'Diseño técnico de 2 piezas clave para el local. Ej: Letrero principal fachada, pizarras de menú, vinilos de vitrina o señalética de baño.', hours: 4.0, days: 2, isEssential: true },
                     { id: 'f1_4', name: 'Diseño de menú base', desc: 'Diseño de 1 ejemplar maestro de carta adaptable. Arquitectura de contenido estratégica.', hours: 6.0, days: 3, isEssential: true }
                 ]
             },
@@ -262,7 +262,7 @@
                         });
                         
                         pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, pageHeight);
-                        pdf.save(`Propuesta_Queenchis_OCD_Ruta${selectedPlan}.pdf`);
+                        pdf.save(`Propuesta_Cotizacion_Queenchis_OCD.pdf`);
                     } catch (err) { 
                         console.error('PDF Error:', err); 
                     } finally {
@@ -275,8 +275,8 @@
             const handleWhatsApp = (type = 'payment') => {
                 const planText = selectedPlan === '01' ? 'Protocolo Bifásico (50/50)' : 'Estructura Trifásica (30/30/40)';
                 const paymentAmount = selectedPlan === '01' ? abonoA : abonoB;
-                const paymentMsg = `¡Hola Yi! ✶ Te confirmo que avanzaremos con la *${planText}* de la propuesta. Adjunto el PDF y el comprobante por el abono de ${fCLP(paymentAmount)}. (Mis datos: RUT, Nombres, Domicilio, Comuna). Gracias!`;
-                const helpMsg = `¡Hola Yi! ✶ Tengo algunas dudas sobre la propuesta, ¿podemos conversar?`;
+                const paymentMsg = `¡Hola Yi! ✶ Te confirmo que avanzaremos con la *${planText}* de la propuesta para Queenchis. Adjunto el PDF y el comprobante por el abono de ${fCLP(paymentAmount)}. (Mis datos: RUT, Nombres, Domicilio, Comuna). Gracias!`;
+                const helpMsg = `¡Hola Yi! ✶ Tengo algunas dudas sobre la propuesta de Queenchis, ¿podemos conversar?`;
                 const text = type === 'payment' ? paymentMsg : helpMsg;
                 window.location.assign(`https://api.whatsapp.com/send?phone=56949873116&text=${encodeURIComponent(text)}`);
             };
@@ -301,11 +301,16 @@
                             </div>
                         </header>
 
+                        <div className="mb-10">
+                            <span className="font-mono text-[10px] text-ocd-green font-bold tracking-[0.3em] uppercase mb-2 block">Branding Strategy /// Client Proposal</span>
+                            <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-zinc-900 leading-none uppercase">Propuesta de cotización <br/> para Queenchis</h2>
+                        </div>
+
                         <section className="mb-10">
-                            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-ocd-black mb-4 uppercase tracking-tighter text-zinc-900">Contexto</h2>
+                            <h2 className="text-xl md:text-2xl font-bold tracking-tight text-ocd-black mb-4 uppercase tracking-tighter text-zinc-900">Contexto</h2>
                             <div className="text-zinc-700 text-sm md:text-[15px] leading-relaxed max-w-2xl mb-5">
                                 <p className="mb-3">
-                                    <strong>Queenchis</strong> es una sandwichería de autor inspirada en la mascota Queen (el nombre rescata el sonido fonético de "Cuinchi"). Ubicado en la Galería La Pérgola, Providencia, el proyecto combina el respeto por la cocina de autor con la versatilidad de carnes de cocción lenta.
+                                    <strong>Queenchis</strong> es una sandwichería de autor inspirada en la mascota Queen. Ubicado en la Galería La Pérgola, Providencia, el proyecto combina el respeto por la cocina de autor con la versatilidad de carnes de cocción lenta y un toque de estética nipona.
                                 </p>
                                 <p>
                                     Nuestro objetivo es alinear esta visión gourmet con un sistema de marca escalable, priorizando la identidad core, la mascota y los puntos de contacto que definen la experiencia frente al público.
@@ -355,8 +360,8 @@
                             </div>
                         </div>
 
-                        {/* LISTA DE SERVICIOS - ACORDEONES INTERACTIVOS */}
-                        <div className="mb-10">
+                        {/* LISTA DE SERVICIOS */}
+                        <div className="mb-14">
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-6">
                                 <div>
                                     <h3 className="text-xl font-black text-ocd-black uppercase tracking-tight">Servicios & Entregables</h3>
@@ -436,23 +441,39 @@
                             </div>
                         </div>
 
-                        {/* SECCIÓN DE PAGO - CONTRASTE ELEVADO & RESUMEN INTEGRADO */}
+                        {/* SECCIÓN DE PAGO & PASOS */}
                         <div id="checkout-section" className="mb-12 bg-[#0D0D0D] text-white border border-black shadow-2xl rounded-[2.5rem] overflow-hidden relative no-print pb-14 z-10">
                             <div className="relative z-20">
                                 <div className="p-10 md:p-14 flex flex-col items-center text-center">
                                     <span className="font-mono text-[11px] text-ocd-green font-bold tracking-widest uppercase mb-6 flex items-center gap-2.5">
                                         <div className="w-2 h-2 bg-ocd-green rounded-full"></div> Activación & Acceso
                                     </span>
-                                    <h3 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase mb-5 leading-none">Cerrar Propuesta</h3>
+                                    <h3 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase mb-5 leading-none">Consolidado de tu Propuesta</h3>
                                     <p className="text-[14px] md:text-[15px] text-zinc-400 max-w-xl leading-relaxed font-medium">
-                                        Revisa tu selección final y elige la estructura de financiamiento que mejor se adapte a tu flujo de caja.
+                                        Revisa tu selección final y sigue los pasos a continuación para iniciar el proceso de producción.
                                     </p>
                                 </div>
+
+                                {/* PROTOCOLO DE ACTIVACIÓN (PASOS) */}
+                                <div className="mx-6 md:mx-14 mb-10 grid grid-cols-1 md:grid-cols-4 gap-4 border-b border-zinc-800 pb-10">
+                                    {[
+                                        { id: '01', t: 'Personaliza', d: 'Selecciona los servicios que necesitas.' },
+                                        { id: '02', t: 'Elige Ruta', d: 'Escoge el esquema de financiamiento.' },
+                                        { id: '03', t: 'PDF', d: 'Descarga tu propuesta como registro oficial.' },
+                                        { id: '04', t: 'Activa', d: 'Realiza el abono y notifica vía WhatsApp.' }
+                                    ].map((step, i) => (
+                                        <div key={i} className="flex flex-col gap-2">
+                                            <span className="text-ocd-green font-mono text-[10px] font-black">{step.id}</span>
+                                            <strong className="text-white text-xs uppercase tracking-widest">{step.t}</strong>
+                                            <p className="text-[11px] text-zinc-500 leading-snug">{step.d}</p>
+                                        </div>
+                                    ))}
+                                </div>
                                 
-                                {/* RESUMEN DE COMPRA INTEGRADO (NUEVO) */}
+                                {/* RESUMEN DE COMPRA INTEGRADO */}
                                 <div className="mx-6 md:mx-14 mb-10 p-8 rounded-3xl bg-zinc-900/50 border border-zinc-800">
                                     <div className="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
-                                        <h4 className="font-mono text-xs font-bold text-zinc-400 uppercase tracking-widest">Resumen del Plan Personalizado</h4>
+                                        <h4 className="font-mono text-xs font-bold text-zinc-400 uppercase tracking-widest">Resumen del Plan</h4>
                                         <span className="text-xs font-bold bg-white/10 px-2 py-1 rounded text-white">{stats.count} servicios</span>
                                     </div>
                                     
@@ -466,9 +487,11 @@
                                             <span className="text-ocd-green font-mono">-{fCLP(stats.discount)}</span>
                                         </div>
                                         <div className="h-px bg-white/10 my-4"></div>
-                                        <div className="flex justify-between items-end">
-                                            <span className="text-xs text-zinc-400 font-mono uppercase tracking-widest font-bold mb-1">Inversión Final Neta</span>
-                                            <span className="text-5xl font-black text-white tracking-tighter leading-none">{fCLP(stats.final)}</span>
+                                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2">
+                                            <span className="text-xs text-zinc-400 font-mono uppercase tracking-widest font-bold mb-1 leading-none">Inversión Final Neta</span>
+                                            <span className="text-4xl sm:text-5xl font-black text-white tracking-tighter leading-none whitespace-nowrap overflow-hidden text-ellipsis max-w-full">
+                                                {fCLP(stats.final)}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -483,7 +506,7 @@
                                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 w-full">
                                             <div className="flex items-center gap-5">
                                                 <div className={`w-8 h-8 rounded-full border-4 flex items-center justify-center shrink-0 transition-all ${selectedPlan === '01' ? 'border-ocd-green' : 'border-zinc-700'}`}>
-                                                    {selectedPlan === '01' && <div className="w-3.5 h-3.5 bg-ocd-green rounded-full animate-fade-in shadow-[0_0_10px_#4ADE80]"></div>}
+                                                    {selectedPlan === '01' && <div className="w-3.5 h-3.5 bg-ocd-green rounded-full animate-fade-in"></div>}
                                                 </div>
                                                 <div>
                                                     <span className={`block font-bold text-[22px] leading-none mb-2 ${selectedPlan === '01' ? 'text-ocd-green' : 'text-zinc-400'}`}>Protocolo Bifásico (50/50)</span>
@@ -506,7 +529,7 @@
                                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 w-full">
                                             <div className="flex items-center gap-5">
                                                 <div className={`w-8 h-8 rounded-full border-4 flex items-center justify-center shrink-0 transition-all ${selectedPlan === '02' ? 'border-ocd-green' : 'border-zinc-700'}`}>
-                                                    {selectedPlan === '02' && <div className="w-3.5 h-3.5 bg-ocd-green rounded-full animate-fade-in shadow-[0_0_10px_#4ADE80]"></div>}
+                                                    {selectedPlan === '02' && <div className="w-3.5 h-3.5 bg-ocd-green rounded-full animate-fade-in"></div>}
                                                 </div>
                                                 <div>
                                                     <span className={`block font-bold text-[22px] leading-none mb-2 ${selectedPlan === '02' ? 'text-ocd-green' : 'text-zinc-400'}`}>Estructura Trifásica (30/30/40)</span>
@@ -538,7 +561,7 @@
 
                                     <div className="space-y-6 h-full flex flex-col justify-center">
                                         <div className="p-8 bg-zinc-900/40 border border-zinc-800 rounded-3xl h-full flex flex-col justify-center">
-                                            <p className="text-[13px] text-zinc-400 leading-relaxed mb-8">Una vez realizado el abono, descarga el PDF y notifícanos para iniciar la fase operativa.</p>
+                                            <p className="text-[13px] text-zinc-400 leading-relaxed mb-8 font-medium">Una vez realizado el abono, descarga el PDF y notifícanos para iniciar la fase operativa.</p>
                                             <div className="flex flex-col gap-4">
                                                 <button onClick={handleDownloadPDF} disabled={isExporting} className={`bg-white text-black font-mono text-[13px] font-black py-5 rounded-2xl uppercase tracking-widest hover:brightness-110 active:scale-95 active:opacity-70 flex justify-center items-center gap-3 transition-all ${isExporting ? 'opacity-50' : ''}`}>
                                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -590,45 +613,45 @@
                         </div>
 
                         {/* FIRMAS Y SELLO - BALANCE EDITORIAL PREMIUM */}
-                        <div className="mt-36 flex flex-col md:flex-row justify-between items-center md:items-end pt-24 gap-12 relative pb-10 border-t border-zinc-100">
+                        <div className="mt-48 flex flex-col md:flex-row justify-between items-center md:items-end pt-24 gap-12 relative pb-10 border-t border-zinc-100">
                             
-                            {/* Bloque Izquierdo: Aprobación Cliente (Interactivo) */}
-                            <div className="flex-1 w-full md:w-auto text-center md:text-left order-2 md:order-1 relative z-10 flex flex-col items-center md:items-start group">
-                                <div className="border-b-2 border-ocd-black mb-3 pb-8 md:pb-12 w-3/4 md:w-full relative flex justify-center md:justify-start items-end">
+                            {/* Bloque Izquierdo: Aprobación Cliente (Interactivo & Destacado) */}
+                            <div className={`flex-1 w-full md:w-auto text-center md:text-left order-2 md:order-1 relative z-10 flex flex-col items-center md:items-start group p-6 rounded-3xl transition-all duration-500 border-2 ${isApproved ? 'bg-ocd-green/5 border-ocd-green shadow-xl' : 'bg-zinc-50 border-zinc-200 shadow-sm'}`}>
+                                <div className="mb-4 w-full relative flex justify-center md:justify-start items-end min-h-[80px]">
                                     <div className="absolute inset-0 flex items-center justify-center md:justify-start">
                                         <button 
                                             onClick={() => setIsApproved(!isApproved)}
-                                            className={`no-print px-4 py-2 rounded-full font-mono text-[10px] font-bold tracking-widest uppercase transition-all duration-500 border ${isApproved ? 'bg-ocd-green text-black border-ocd-green scale-90' : 'bg-white text-zinc-400 border-zinc-200 hover:border-ocd-green hover:text-ocd-green'}`}
+                                            className={`no-print px-6 py-3 rounded-full font-mono text-[11px] font-bold tracking-widest uppercase transition-all duration-500 border-2 ${isApproved ? 'bg-ocd-green text-black border-ocd-green scale-100' : 'bg-white text-zinc-500 border-zinc-300 hover:border-ocd-green hover:text-ocd-green hover:shadow-lg'}`}
                                         >
                                             {isApproved ? '✓ Contrato Validado' : 'Clic para Aprobar'}
                                         </button>
                                         
                                         {/* Sello de Aprobación Visual (Visible en PDF si está activo) */}
                                         {isApproved && (
-                                            <div className="absolute top-[-30px] left-0 animate-fade-in pointer-events-none">
-                                                <div className="border-4 border-ocd-green text-ocd-green font-black px-4 py-1 text-2xl rotate-[-12deg] opacity-60">
+                                            <div className="absolute top-[-50px] left-0 animate-fade-in pointer-events-none">
+                                                <div className="border-4 border-ocd-green text-ocd-green font-black px-5 py-2 text-3xl rotate-[-15deg] opacity-70">
                                                     APPROVED
                                                 </div>
-                                                <div className="text-[8px] font-mono text-ocd-green font-bold mt-1 uppercase tracking-tighter">Auth_Folio: {Math.random().toString(36).substring(7).toUpperCase()}</div>
+                                                <div className="text-[10px] font-mono text-ocd-green font-bold mt-2 uppercase tracking-widest bg-white px-2">ID_VALID: {Math.random().toString(36).substring(7).toUpperCase()}</div>
                                             </div>
                                         )}
                                     </div>
-                                    <span className="font-black text-[11px] tracking-tighter uppercase text-ocd-black leading-none tracking-[0.2em] opacity-20">OPEN SYSTEM</span>
                                 </div>
-                                <div className="font-bold text-ocd-black uppercase text-[10px] md:text-[11px] tracking-[0.3em] font-sans leading-none">Aprobación Cliente</div>
+                                <div className="font-black text-[12px] tracking-tighter uppercase text-ocd-black leading-none tracking-[0.2em] mb-2">OPEN SYSTEM</div>
+                                <div className="font-bold text-ocd-black uppercase text-[11px] md:text-[12px] tracking-[0.3em] font-sans leading-none">Aprobación Cliente</div>
                             </div>
 
                             {/* Bloque Central: Version Tracking */}
                             <div className="order-3 md:order-2 flex flex-col items-center relative z-10">
                                 <div className="font-mono text-[10px] text-zinc-400 tracking-[0.2em] uppercase font-bold bg-white/80 backdrop-blur-sm px-4 py-1.5 rounded-full border border-zinc-100 shadow-sm">
-                                    Open Club System v.60.0
+                                    Open Club System v.61.0
                                 </div>
                             </div>
 
                             {/* Bloque Derecho: Firma Dirección (Con Sello Giratorio) */}
                             <div className="flex-1 w-full md:w-auto text-center md:text-right order-1 md:order-3 relative z-10 flex flex-col items-center md:items-end group">
                                 {/* Rotating Authorization Seal - Centrado sobre tu nombre */}
-                                <div className="absolute top-[-90px] md:top-[-110px] right-1/2 translate-x-1/2 md:translate-x-0 md:right-0 w-32 h-32 md:w-44 h-44 text-ocd-green opacity-90 pointer-events-none mix-blend-multiply z-0">
+                                <div className="absolute top-[-110px] md:top-[-130px] right-1/2 translate-x-1/2 md:translate-x-0 md:right-0 w-36 h-36 md:w-48 h-48 text-ocd-green opacity-90 pointer-events-none mix-blend-multiply z-0">
                                     <svg viewBox="0 0 100 100" className="w-full h-full animate-[spin_15s_linear_infinite]">
                                         <defs><path id="sealPath" d="M 50, 50 m -36, 0 a 36,36 0 1,1 72,0 a 36,36 0 1,1 -72,0" /></defs>
                                         <text fontSize="10" fontWeight="bold" fill="currentColor" className="font-mono uppercase tracking-widest">
