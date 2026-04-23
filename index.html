@@ -5,14 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Propuesta estratégica - Queenchis | OPEN CLUB</title>
     
+    <!-- LIBRERÍAS DE EXPORTACIÓN Y RENDIMIENTO -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- TIPOGRAFÍA SISTEMA -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
+    <!-- FRAMEWORK -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -40,9 +43,9 @@
     </script>
 
     <style>
-        /* Optimización de Interacción */
-        * { -webkit-tap-highlight-color: transparent; }
-        body { background-color: #f3f4f6; -webkit-font-smoothing: antialiased; }
+        /* UI/UX Optimizations */
+        * { -webkit-tap-highlight-color: transparent; outline: none !important; }
+        body { background-color: #f3f4f6; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
         
         .a4-page { 
             width: 100%; 
@@ -84,29 +87,31 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.4);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.4);
             border: 1px solid rgba(255,255,255,0.1);
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             user-select: none;
             touch-action: manipulation;
         }
+        .cart-bubble:hover { transform: scale(1.05); border-color: #4ADE80; }
+        .cart-bubble:active { transform: scale(0.95); }
         
         .cart-dropdown {
             width: calc(100vw - 32px);
             max-width: 400px;
             background: #111113; 
-            border-radius: 20px;
-            padding: 20px;
+            border-radius: 24px;
+            padding: 24px;
             margin-bottom: 12px;
-            box-shadow: 0 20px 50px -10px rgba(0,0,0,0.8);
+            box-shadow: 0 30px 60px -15px rgba(0,0,0,0.8);
             border: 1px solid rgba(255,255,255,0.15);
             color: white;
             opacity: 0;
             visibility: hidden;
             transform: translateY(20px);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            max-height: 85vh;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            max-height: 80vh;
             display: flex;
             flex-direction: column;
         }
@@ -118,7 +123,7 @@
         .timeline-container { position: relative; padding-top: 20px; }
         .timeline-line { height: 2px; background: #E5E7EB; position: absolute; left: 0; right: 0; }
         .timeline-dot { width: 10px; height: 10px; background: #E5E7EB; border-radius: 50%; position: relative; z-index: 1; }
-        .timeline-dot.active { background: #4ADE80; box-shadow: 0 0 8px #4ADE80; }
+        .timeline-dot.active { background: #4ADE80; box-shadow: 0 0 10px #4ADE80; }
         
         @media print {
             .no-print { display: none !important; }
@@ -133,6 +138,7 @@
     <script type="text/babel">
         const { useState, useMemo, useEffect } = React;
 
+        // Formato CLP robusto con separadores de miles
         const fCLP = (num) => '$' + Math.round(num).toLocaleString('es-CL').replace(/,/g, '.');
 
         const BASE_RATE = 25000;
@@ -145,7 +151,7 @@
                 tag: 'NECESARIA',
                 color: 'bg-ocd-green text-black font-bold',
                 items: [
-                    { id: 'f1_0', name: 'Reunión: Briefing & definición', desc: 'Alineación de objetivos y marco estratégico del proyecto (sesión de cortesía).', hours: 0, days: 1, priceOverride: 0, isEssential: true },
+                    { id: 'f1_0', name: 'Reunión: Briefing & definición', desc: 'Alineación de objetivos y marco estratégico (sesión de cortesía).', hours: 0, days: 1, priceOverride: 0, isEssential: true },
                     { id: 'f1_1', name: 'Logo principal + sistema visual', desc: 'Desarrollo de 2 direcciones gráficas estratégicas, versiones oficiales y reducciones técnicas.', hours: 14.0, days: 5, isEssential: true },
                     { id: 'f1_2', name: 'Manual de marca', desc: 'Guía técnica integral que consolida paleta de colores, familia tipográfica y normas de uso.', hours: 5.0, days: 2, priceOverride: 100000, isEssential: true },
                     { id: 'f1_3', name: 'Señalética física', desc: 'Diseño técnico de señalización de marca para el local físico (ej. letrero de fachada o pizarras).', hours: 4.0, days: 2, isEssential: true },
@@ -162,7 +168,7 @@
                     { id: 'f2_pap', name: 'Papelería corporativa', desc: 'Diseño para pieza impresa para difusión y operación (flyers, tarjetas o posters).', hours: 3.5, days: 2, priceOverride: 50000 },
                     { id: 'f2_m', name: 'Ilustración / Mascot creation', desc: 'Desarrollo de personaje o mascota animada en 3 poses.', hours: 8.0, days: 4, priceOverride: 50000 },
                     { id: 'f2_p', name: 'Dirección creativa para campaña', desc: 'Conceptos visuales y narrativa para el lanzamiento del local y redes sociales.', hours: 6.0, days: 3 },
-                    { id: 'f2_f', name: 'Reunión: Presentación final', desc: 'Cierre de etapa de diseño y entrega oficial de activos del sistema (sesión de cortesía).', hours: 0, days: 1, priceOverride: 0 }
+                    { id: 'f2_f', name: 'Reunión: Presentación final', desc: 'Cierre de etapa de diseño y entrega oficial de activos (sesión de cortesía).', hours: 0, days: 1, priceOverride: 0 }
                 ]
             },
             {
@@ -219,7 +225,7 @@
         };
 
         const App = () => {
-            // Pre-seleccionados: esenciales + papelería + merch base
+            // Pre-seleccionados solicitados
             const [selectedItems, setSelectedItems] = useState(new Set([
                 'f1_0', 'f1_1', 'f1_2', 'f1_3', 'f1_4', 'f2_1', 'f2_pap', 'm_base', 'f2_f'
             ]));
@@ -247,14 +253,11 @@
                         }
                     });
                 });
-                const margin = Math.ceil(days * 0.20);
-                const totalDays = days + margin;
-                const totalWeeks = (totalDays / 5).toFixed(1);
-                
+                const totalWeeks = ( (days + Math.ceil(days * 0.20)) / 5).toFixed(1);
                 const discount = Math.round((rawTotal * DISCOUNT_PCT) / 1000) * 1000;
                 const final = rawTotal - discount;
                 
-                return { hrs, totalDays, totalWeeks, baseTotal: rawTotal, discount, final, details };
+                return { hrs, totalWeeks, baseTotal: rawTotal, discount, final, details, totalDays: days + Math.ceil(days * 0.20) };
             }, [selectedItems]);
 
             const abonoA = Math.round((stats.final * 0.5) / 1000) * 1000;
@@ -304,14 +307,10 @@
                 window.location.assign(`https://api.whatsapp.com/send?phone=56949873116&text=${encodeURIComponent(text)}`);
             };
 
-            const scrollToCheckout = () => {
-                document.getElementById('checkout-section').scrollIntoView({ behavior: 'smooth' });
-            };
-
             return (
                 <div className="text-ocd-black font-sans flex flex-col items-center relative min-h-screen">
                     
-                    {/* QUICK CART MODULE */}
+                    {/* SYSTEM QUICK CART */}
                     {!isExporting && (
                         <div className="quick-cart no-print">
                             <div className={`cart-dropdown ${isCartOpen ? 'open' : ''}`}>
@@ -321,7 +320,7 @@
                                 </div>
                                 <div className="overflow-y-auto custom-scrollbar pr-2 space-y-2 flex-1 mb-3">
                                     {stats.details.map((item, idx) => (
-                                        <div key={idx} className="group flex justify-between items-start gap-4 p-3 rounded-lg hover:bg-white/5 transition-colors">
+                                        <div key={idx} className="group flex justify-between items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors">
                                             <div className="flex gap-3 items-center flex-1">
                                                 <span className="font-mono text-[10px] text-zinc-600">{(idx + 1).toString().padStart(2, '0')}</span>
                                                 <span className="text-[12px] text-zinc-300 font-medium leading-snug">{item.name}</span>
@@ -338,7 +337,7 @@
                                         <span className="font-mono text-[10px] uppercase tracking-widest text-zinc-400">Inversión Final</span>
                                         <span className="text-4xl font-black text-white tracking-tighter leading-none">{fCLP(stats.final)}</span>
                                     </div>
-                                    <button onClick={scrollToCheckout} className="w-full bg-ocd-green text-black font-mono text-[12px] font-bold py-4 rounded-xl uppercase tracking-widest hover:brightness-110 active:opacity-80 transition-all flex justify-center items-center gap-2">Ir a Finalizar</button>
+                                    <button onClick={() => document.getElementById('checkout-section').scrollIntoView({ behavior: 'smooth' })} className="w-full bg-ocd-green text-black font-mono text-[12px] font-bold py-4 rounded-xl uppercase tracking-widest hover:brightness-110 active:opacity-80 transition-all flex justify-center items-center gap-2">Ir a Finalizar</button>
                                 </div>
                             </div>
                             <div className="cart-bubble" onClick={() => setIsCartOpen(!isCartOpen)}>
@@ -375,7 +374,7 @@
                             <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-ocd-black mb-4 uppercase tracking-tighter">Contexto</h2>
                             <div className="text-zinc-700 text-sm md:text-[15px] leading-relaxed max-w-2xl mb-5">
                                 <p className="mb-3">
-                                    Queenchis es una sandwichería de autor inspirada en la mascota Queen (el nombre rescata el sonido fonético de "Cuinchi"). Ubicado en la Galería La Pérgola, Avenida Providencia, el proyecto combina el respeto por la cocina de autor con la versatilidad de sándwiches clásicos italianos y carnes de cocción lenta.
+                                    Queenchis es una sandwichería de autor inspirada en la mascota Queen (el nombre rescata el sonido fonético de "Cuinchi"). Ubicado en la Galería La Pérgola, Providencia, el proyecto combina el respeto por la cocina de autor con la versatilidad de sándwiches clásicos y carnes de cocción lenta.
                                 </p>
                                 <p>
                                     Trabajaremos para alinear esta visión gourmet con un sistema de marca escalable, priorizando la identidad core, la mascota, influencias y los puntos de contacto que definen la experiencia de la marca frente al público.
@@ -386,8 +385,8 @@
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10 items-center bg-zinc-50 p-6 rounded-2xl border border-zinc-100">
                             <div>
-                                <h3 className="text-lg md:text-xl font-bold mb-2 uppercase text-ocd-black">Brand potential matrix</h3>
-                                <p className="text-[11px] text-zinc-500 mb-5 leading-relaxed">Impacto proyectado en el sistema.</p>
+                                <h3 className="text-lg md:text-xl font-bold mb-2 uppercase text-ocd-black tracking-tight">Brand potential matrix</h3>
+                                <p className="text-[11px] text-zinc-500 mb-5 leading-relaxed">Impacto proyectado en el sistema visual de la marca.</p>
                                 <div className="flex flex-wrap gap-4 text-[10px] font-mono font-bold uppercase">
                                     <div className="flex items-center gap-2"><div className="w-3 h-3 bg-zinc-200"></div> Estado Actual</div>
                                     <div className="flex items-center gap-2"><div className="w-3 h-3 bg-ocd-green"></div> Con Open Club</div>
@@ -532,10 +531,10 @@
                                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 w-full">
                                             <div className="flex items-center gap-5">
                                                 <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${selectedPlan === '01' ? 'border-ocd-green' : 'border-zinc-700'}`}>
-                                                    {selectedPlan === '01' && <div className="w-3.5 h-3.5 bg-ocd-green rounded-full animate-fade-in"></div>}
+                                                    {selectedPlan === '01' && <div className="w-3.5 h-3.5 bg-ocd-green rounded-full"></div>}
                                                 </div>
                                                 <div>
-                                                    <span className={`block font-bold text-[20px] md:text-[22px] leading-none mb-2 ${selectedPlan === '01' ? 'text-ocd-green' : 'text-zinc-400 group-hover:text-tp'}`}>Ruta 01 (50/50)</span>
+                                                    <span className={`block font-bold text-[20px] md:text-[22px] leading-none mb-2 ${selectedPlan === '01' ? 'text-ocd-green' : 'text-zinc-400'}`}>Ruta 01 (50/50)</span>
                                                     <span className="block text-[13px] text-zinc-500 font-mono font-bold tracking-widest uppercase">División en dos cuotas iguales</span>
                                                 </div>
                                             </div>
@@ -555,10 +554,10 @@
                                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 w-full">
                                             <div className="flex items-center gap-5">
                                                 <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${selectedPlan === '02' ? 'border-ocd-green' : 'border-zinc-700'}`}>
-                                                    {selectedPlan === '02' && <div className="w-3.5 h-3.5 bg-ocd-green rounded-full animate-fade-in"></div>}
+                                                    {selectedPlan === '02' && <div className="w-3.5 h-3.5 bg-ocd-green rounded-full"></div>}
                                                 </div>
                                                 <div>
-                                                    <span className={`block font-bold text-[20px] md:text-[22px] leading-none mb-2 ${selectedPlan === '02' ? 'text-ocd-green' : 'text-zinc-400 group-hover:text-tp'}`}>Ruta 02 (30/30/40)</span>
+                                                    <span className={`block font-bold text-[20px] md:text-[22px] leading-none mb-2 ${selectedPlan === '02' ? 'text-ocd-green' : 'text-zinc-400'}`}>Ruta 02 (30/30/40)</span>
                                                     <span className="block text-[13px] text-zinc-500 font-mono font-bold tracking-widest uppercase">Tres hitos clave de proyecto</span>
                                                 </div>
                                             </div>
@@ -642,9 +641,10 @@
                             </ul>
                         </div>
 
-                        {/* FIRMAS Y SELLO - SIN LÍNEA QUE MOLESTE */}
+                        {/* FIRMAS Y SELLO - SIN LÍNEAS DE INTERFERENCIA */}
                         <div className="mt-36 flex flex-col md:flex-row justify-between items-center md:items-end pt-36 gap-10 relative pb-10">
-                            {/* Sello giratorio - Ahora sin línea border-t encima */}
+                            
+                            {/* Rotating Authorization Seal */}
                             <div className="absolute top-10 md:-top-20 left-1/2 md:left-auto md:right-[15%] -translate-x-1/2 md:translate-x-0 w-32 h-32 md:w-44 h-44 text-ocd-green opacity-90 pointer-events-none mix-blend-multiply">
                                 <svg viewBox="0 0 100 100" className="w-full h-full animate-[spin_15s_linear_infinite]">
                                     <defs><path id="sealPath" d="M 50, 50 m -36, 0 a 36,36 0 1,1 72,0 a 36,36 0 1,1 -72,0" /></defs>
@@ -659,7 +659,7 @@
                                 <div className="border-b border-black mb-3 pb-12 w-3/4 mx-auto md:w-full relative flex justify-center items-end opacity-20"><span className="font-black text-[11px] tracking-tighter uppercase text-ocd-black leading-none tracking-[0.2em]">OPEN SYSTEM</span></div>
                                 <div className="font-bold text-ocd-black uppercase text-[10px] md:text-[11px] tracking-[0.3em] font-sans leading-none">Aprobación Cliente</div>
                             </div>
-                            <div className="order-3 md:order-2 font-mono text-[10px] text-zinc-400 tracking-[0.2em] uppercase font-bold bg-white/80 backdrop-blur-sm px-4 py-1.5 rounded">Open Club System v.49.0</div>
+                            <div className="order-3 md:order-2 font-mono text-[10px] text-zinc-400 tracking-[0.2em] uppercase font-bold bg-white/80 backdrop-blur-sm px-4 py-1.5 rounded">Open Club System v.50.0</div>
                             <div className="w-full md:w-72 text-center md:text-right order-1 md:order-3 relative z-10">
                                 <div className="border-b border-black mb-3 pb-12 w-3/4 mx-auto md:w-full text-ocd-green font-mono text-[12px] italic font-bold uppercase tracking-widest">Auth_YI_Director</div>
                                 <div className="font-bold text-ocd-black text-[16px] md:text-lg uppercase tracking-tighter leading-none inline-block mt-1.5">Yi</div>
