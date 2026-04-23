@@ -52,6 +52,15 @@
         }
         body { background-color: #f3f4f6; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
         
+        /* Contenedor principal para permitir que el carrito sea independiente */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            width: 100%;
+        }
+
         .a4-page { 
             width: 100%; 
             max-width: 100%; 
@@ -85,20 +94,21 @@
             transform: none !important;
         }
 
+        /* Módulo de Carrito Fijo Inamovible */
         .quick-cart {
             position: fixed;
             bottom: 25px;
             right: 20px;
-            z-index: 9999; /* Máxima prioridad sobre cualquier capa */
+            z-index: 9999; /* Máxima prioridad */
             display: flex;
             flex-direction: column;
             align-items: flex-end;
             font-family: 'Inter', sans-serif;
-            pointer-events: none; /* Evita interferencia con scroll */
+            pointer-events: none; /* No bloquea el scroll del fondo */
         }
         
         .cart-bubble, .cart-dropdown {
-            pointer-events: auto; /* Permite clics solo en el botón y dropdown */
+            pointer-events: auto; /* Reactiva interacción */
         }
 
         .cart-bubble {
@@ -110,7 +120,7 @@
             align-items: center;
             gap: 12px;
             box-shadow: 0 15px 35px -5px rgba(0,0,0,0.6);
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.1);
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             user-select: none;
@@ -136,7 +146,7 @@
             visibility: hidden;
             transform: translateY(30px);
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            max-height: 80vh;
+            max-height: 70vh;
             display: flex;
             flex-direction: column;
         }
@@ -237,7 +247,7 @@
                     { id: 'f2_pap', name: 'Papelería corporativa', desc: 'Diseño para pieza impresa (flyers, tarjetas o posters).', hours: 3.5, days: 2, priceOverride: 50000 },
                     { id: 'f2_m', name: 'Ilustración / Mascot creation', desc: 'Desarrollo de personaje o mascota animada en 3 poses.', hours: 8.0, days: 4, priceOverride: 50000 },
                     { id: 'f2_p', name: 'Dirección creativa para campaña', desc: 'Conceptos visuales y narrativa para lanzamiento y redes sociales.', hours: 6.0, days: 3 },
-                    { id: 'f2_f', name: 'Reunión: Presentación final', desc: 'Cierre de etapa de diseño y entrega oficial de activos (sesión de cortesía).', hours: 0, days: 1, priceOverride: 0 }
+                    { id: 'f2_f', name: 'Reunión: Presentación final', desc: 'Cierre de etapa de diseño y entrega oficial de activos del sistema (sesión de cortesía).', hours: 0, days: 1, priceOverride: 0 }
                 ]
             },
             {
@@ -347,9 +357,9 @@
             };
 
             return (
-                <div className="text-ocd-black font-sans flex flex-col items-center relative min-h-screen overflow-x-hidden">
+                <div className="app-container">
                     
-                    {/* QUICK CART MODULE - FIXED & STABLE */}
+                    {/* QUICK CART MODULE - TOTALMENTE FIJO */}
                     {!isExporting && (
                         <div className="quick-cart no-print">
                             <div className={`cart-dropdown ${isCartOpen ? 'open' : ''}`}>
@@ -362,7 +372,7 @@
                                         <div key={idx} className="group flex justify-between items-start gap-4 p-3 rounded-lg hover:bg-white/5 transition-colors">
                                             <div className="flex gap-3 items-center flex-1">
                                                 <span className="font-mono text-[10px] text-zinc-600">{(idx + 1).toString().padStart(2, '0')}</span>
-                                                <span className="text-[13px] text-zinc-300 font-medium leading-snug">{item.name}</span>
+                                                <span className="text-[12px] text-zinc-300 font-medium leading-snug">{item.name}</span>
                                             </div>
                                             <span className="font-mono text-[11px] text-ocd-green font-medium shrink-0">{item.price > 0 ? fCLP(item.price) : 'Cortesía'}</span>
                                         </div>
@@ -635,7 +645,7 @@
                                     <div className="space-y-4">
                                         <div className="bg-[#111] p-8 rounded-3xl border border-zinc-800">
                                             <span className="font-mono text-[11px] text-zinc-500 font-bold uppercase tracking-[0.2em] mb-6 block">Banca / Recepción</span>
-                                            <div className="text-[15px] text-zinc-400 space-y-2 font-mono">
+                                            <div className="text-[14px] text-zinc-400 space-y-2 font-mono">
                                                 <strong className="text-white block mb-4 font-sans text-xl tracking-tight leading-none">Javiera Saint-Jour</strong>
                                                 <span className="block">RUT: 18.445.291-K</span>
                                                 <span className="block">Scotiabank — Cta. Corriente</span>
@@ -724,7 +734,7 @@
                                     </div>
                                     <span className="font-black text-[11px] tracking-tighter uppercase text-ocd-black leading-none tracking-[0.2em] opacity-20">OPEN SYSTEM</span>
                                 </div>
-                                <div className="font-bold text-ocd-black uppercase text-[11px] md:text-[12px] tracking-[0.3em] font-sans leading-none">Aprobación Cliente</div>
+                                <div className="font-bold text-ocd-black uppercase text-[10px] md:text-[11px] tracking-[0.3em] font-sans leading-none">Aprobación Cliente</div>
                             </div>
 
                             {/* Bloque Central: Version Tracking */}
