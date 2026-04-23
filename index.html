@@ -348,7 +348,7 @@
             // PASO 2: Enviar a WhatsApp
             const handleWhatsApp = () => {
                 const planAbono = selectedPlan === 'A' ? stats.final * 0.5 : stats.final * 0.3;
-                const text = `¡Hola Yi! ✶ Te confirmo que avanzaremos con el *Plan ${selectedPlan}* de la propuesta. Aquí te adjunto el PDF de la propuesta y el comprobante de transferencia por el abono inicial de ${fCLP(planAbono)}. (Mis datos para la boleta: RUT, Nombres, Domicilio, Comuna). Gracias, ¡Hablamos!`;
+                const text = `¡Hola Yi! ✶ Te confirmo que avanzaremos con el *Plan ${selectedPlan}* de la propuesta. Aquí te adjunto el PDF de la propuesta y el comprobante de transferencia por el abono inicial de ${fCLP(planAbono)}. (Mis datos para la boleta: RUT, Nombres, Domicilio, Comuna). Gracias, ¡Hablamos!\n\nmuchas gracias ♡♡♡✷~ "será hermoso"`;
                 
                 const encodedText = encodeURIComponent(text);
                 window.open(`https://wa.me/?text=${encodedText}`, '_blank');
@@ -693,13 +693,19 @@
                                             </div>
                                         </div>
 
-                                        {/* Nota de Instrucciones / Cierre Amistoso */}
-                                        <div className="bg-ocd-green/10 border border-ocd-green/20 p-5 rounded-2xl text-center flex flex-col items-center justify-center">
-                                            <p className="text-[11px] md:text-xs text-zinc-300 leading-relaxed">
+                                        {/* Nota de Instrucciones / Cierre Amistoso con Glow */}
+                                        <div className="bg-ocd-green/10 border border-ocd-green/20 p-5 md:p-6 rounded-2xl text-center flex flex-col items-center justify-center relative overflow-hidden">
+                                            <div className="absolute inset-0 bg-gradient-to-t from-ocd-green/10 to-transparent pointer-events-none"></div>
+                                            
+                                            <p className="text-[11px] md:text-xs text-zinc-300 leading-relaxed relative z-10">
                                                 * Por favor, envíame en WhatsApp el <strong>PDF descargado</strong> y el <strong>comprobante de transferencia</strong>.<br/><br/>
-                                                ¿Tienes dudas o necesitas ajustar algún detalle? <strong className="text-white">✶ Conversemos!</strong><br/><br/>
-                                                <span className="text-ocd-green font-medium">muchas gracias ♡♡♡✷~ "será hermoso"</span>
+                                                ¿Tienes dudas o necesitas ajustar algún detalle? <strong className="text-white">✶ Conversemos!</strong>
                                             </p>
+                                            
+                                            <div className="mt-5 relative z-10">
+                                                <span className="block text-white text-[11px] md:text-xs font-bold tracking-widest uppercase mb-1">muchas gracias ♡</span>
+                                                <span className="block text-ocd-green text-lg md:text-xl font-black tracking-tighter italic drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]">~✷♡♡ será hermoso ♡♡✷~</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -774,10 +780,7 @@
                                 <div className="font-bold text-ocd-black uppercase text-[9px] md:text-[10px] tracking-widest font-sans">Aprobación Cliente</div>
                             </div>
                             <div className="text-center order-3 md:order-2 w-full md:w-auto relative z-10">
-                                <div className="font-mono text-[8px] md:text-[9px] text-zinc-400 tracking-[0.2em] uppercase font-bold bg-white/80 backdrop-blur-sm px-3 py-1 rounded">Open Club System v.40.0</div>
-                            </div>
-                            <div className="text-center order-3 md:order-2 w-full md:w-auto relative z-10">
-                                <div className="font-mono text-[8px] md:text-[9px] text-zinc-400 tracking-[0.2em] uppercase font-bold bg-white/80 backdrop-blur-sm px-3 py-1 rounded">Open Club System v.39.0</div>
+                                <div className="font-mono text-[8px] md:text-[9px] text-zinc-400 tracking-[0.2em] uppercase font-bold bg-white/80 backdrop-blur-sm px-3 py-1 rounded">Open Club System v.41.0</div>
                             </div>
                             <div className="w-full md:w-64 text-center md:text-right order-1 md:order-3 relative z-10">
                                 <div className="border-b border-black mb-2 pb-6 md:pb-10 w-3/4 mx-auto md:w-full md:ml-auto text-ocd-green font-mono text-[10px] md:text-[11px] italic font-bold uppercase">Auth_YI_Director</div>
