@@ -50,7 +50,7 @@
             outline: none !important; 
             touch-action: manipulation; 
         }
-        body { background-color: #f3f4f6; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+        body { background-color: #f3f4f6; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; margin: 0; padding: 0; }
         
         .a4-page { 
             width: 100%; 
@@ -61,7 +61,7 @@
             padding-bottom: 12rem; /* Espacio para el Bottom Bar */
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); 
             position: relative; 
-            z-index: 10;
+            z-index: 1;
         }
 
         @media (min-width: 768px) {
@@ -76,17 +76,7 @@
             }
         }
 
-        /* Estabilizador de PDF: Garantiza que se vea como en Desktop A4 */
-        .exporting-pdf {
-            width: 794px !important; 
-            max-width: 794px !important;
-            padding: 45px !important;
-            box-shadow: none !important;
-            transform: none !important;
-            display: block !important;
-        }
-
-        /* Bottom Bar System */
+        /* Bottom Bar System - Blindado en Mobile */
         .bottom-bar {
             position: fixed;
             bottom: 0;
@@ -94,8 +84,9 @@
             width: 100%;
             background: #050505;
             border-top: 1px solid rgba(255,255,255,0.1);
-            z-index: 1000;
+            z-index: 9999;
             padding-bottom: env(safe-area-inset-bottom);
+            transform: translateZ(0); /* Force GPU rendering to prevent jitter */
         }
 
         .cart-dropdown {
@@ -120,6 +111,9 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #4ADE80; border-radius: 10px; }
 
         .timeline-dot.active { background: #4ADE80; box-shadow: 0 0 10px #4ADE80; }
         
@@ -282,36 +276,42 @@
                 if (isExporting) return;
                 setIsExporting(true);
                 setIsCartOpen(false);
-                const currentScroll = window.scrollY; 
                 
-                const element = document.querySelector('.a4-page');
-                element.classList.add('exporting-pdf');
-                window.scrollTo(0, 0); 
-
+                // Esperar a que el UI se actualice
                 setTimeout(async () => {
+                    const element = document.querySelector('.a4-page');
                     try {
                         const canvas = await html2canvas(element, {
-                            scale: 3, // Calidad Editorial
+                            scale: 2.5, // Balance entre calidad y peso
                             useCORS: true,
                             backgroundColor: '#ffffff',
+                            logging: false,
+                            y: 0,
                             scrollY: 0,
-                            height: element.scrollHeight,
-                            width: 794 // 210mm exactos para el motor de captura
+                            windowWidth: element.scrollWidth,
+                            windowHeight: element.scrollHeight
                         });
+                        
                         const imgData = canvas.toDataURL('image/png', 1.0);
-                        const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
-                        const pdfWidth = pdf.internal.pageSize.getWidth();
-                        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-                        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
-                        pdf.save(`Propuesta_Queenchis_OCD_Ruta${selectedPlan}.pdf`);
+                        
+                        // Calculamos ancho base (210mm) y altura proporcional infinita
+                        const imgWidth = 210; 
+                        const pageHeight = (canvas.height * imgWidth) / canvas.width;
+                        
+                        const pdf = new jspdf.jsPDF({
+                            orientation: 'p',
+                            unit: 'mm',
+                            format: [imgWidth, pageHeight]
+                        });
+                        
+                        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, pageHeight);
+                        pdf.save(`Propuesta_Queenchis_OCD_Full.pdf`);
                     } catch (err) { 
                         console.error('Error de Exportación:', err); 
                     } finally {
-                        element.classList.remove('exporting-pdf');
-                        window.scrollTo(0, currentScroll); 
                         setIsExporting(false);
                     }
-                }, 600);
+                }, 500);
             };
 
             const handleWhatsApp = (type = 'payment') => {
@@ -326,7 +326,7 @@
             return (
                 <div className="flex flex-col items-center relative min-h-screen">
                     
-                    {/* BOTTOM BAR SYSTEM - FIJO EN LA BASE */}
+                    {/* BOTTOM BAR SYSTEM - FIJO INAMOVIBLE */}
                     {!isExporting && (
                         <div className="bottom-bar no-print">
                             <div className={`cart-dropdown ${isCartOpen ? 'open' : ''}`}>
@@ -554,7 +554,7 @@
                                 </div>
                                 
                                 <div className="px-6 md:px-14 flex flex-col gap-6 items-stretch mb-12 relative z-[30]">
-                                    {/* Protocolo Bifásico */}
+                                    {/* Ruta 01 Selector */}
                                     <button 
                                         type="button"
                                         onClick={() => setSelectedPlan('01')} 
@@ -577,7 +577,7 @@
                                         </div>
                                     </button>
 
-                                    {/* Estructura Trifásica */}
+                                    {/* Ruta 02 Selector */}
                                     <button 
                                         type="button"
                                         onClick={() => setSelectedPlan('02')} 
@@ -605,7 +605,7 @@
                                     <div className="space-y-4">
                                         <div className="bg-[#111] p-8 rounded-3xl border border-zinc-800">
                                             <span className="font-mono text-[11px] text-zinc-500 font-bold uppercase tracking-[0.2em] mb-6 block">Banca / Recepción</span>
-                                            <div className="text-[15px] text-zinc-400 space-y-2 font-mono">
+                                            <div className="text-[14px] text-zinc-400 space-y-2 font-mono">
                                                 <strong className="text-white block mb-4 font-sans text-xl tracking-tight leading-none">Javiera Saint-Jour</strong>
                                                 <span className="block">RUT: 18.445.291-K</span>
                                                 <span className="block">Scotiabank — Cta. Corriente</span>
