@@ -44,7 +44,12 @@
     </script>
 
     <style>
-        * { -webkit-tap-highlight-color: transparent; outline: none !important; }
+        /* UI/UX Optimizations */
+        * { 
+            -webkit-tap-highlight-color: transparent; 
+            outline: none !important; 
+            touch-action: manipulation; /* Optimiza el retraso de clic en mobile */
+        }
         body { background-color: #f3f4f6; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
         
         .a4-page { 
@@ -90,12 +95,16 @@
             box-shadow: 0 10px 25px -5px rgba(0,0,0,0.4);
             border: 1px solid rgba(255,255,255,0.1);
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             user-select: none;
-            touch-action: manipulation;
         }
-        .cart-bubble:hover { transform: scale(1.05); border-color: #4ADE80; }
-        .cart-bubble:active { transform: scale(0.95); }
+        
+        /* Solo aplicar hover en dispositivos que soporten puntero (evita sticky hover en mobile) */
+        @media (hover: hover) {
+            .cart-bubble:hover { transform: scale(1.05); border-color: #4ADE80; }
+        }
+        
+        .cart-bubble:active { transform: scale(0.92); opacity: 0.8; }
         
         .cart-dropdown {
             width: calc(100vw - 32px);
@@ -110,7 +119,7 @@
             opacity: 0;
             visibility: hidden;
             transform: translateY(20px);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             max-height: 80vh;
             display: flex;
             flex-direction: column;
@@ -144,6 +153,7 @@
     <script type="text/babel">
         const { useState, useMemo, useEffect } = React;
 
+        // Componente RadarChart definido fuera para evitar errores de referencia
         function RadarChart({ data }) {
             const points = data.length;
             const radius = 68; 
@@ -296,7 +306,7 @@
                         const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
                         pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
                         pdf.save(`Propuesta_Queenchis_Ruta${selectedPlan}.pdf`);
-                    } catch (err) { console.error(err); }
+                    } catch (err) { console.error('PDF Error:', err); }
                     finally { window.scrollTo(0, currentScroll); setIsExporting(false); }
                 }, 300);
             };
@@ -304,13 +314,13 @@
             const handleWhatsApp = (type = 'payment') => {
                 const planAbono = selectedPlan === '01' ? abonoA : abonoB;
                 const text = type === 'payment' 
-                    ? `¡Hola Yi! ✶ Te confirmo que avanzaremos con la *Ruta ${selectedPlan}* de la propuesta. Aquí te adjunto el PDF de la propuesta y el comprobante de transferencia por el abono inicial de ${fCLP(planAbono)}. (Mis datos para la boleta: RUT, Nombres, Domicilio, Comuna). Gracias, ¡Hablamos!`
+                    ? `¡Hola Yi! ✶ Te confirmo que avanzaremos con la *Ruta ${selectedPlan}* de la propuesta. Aquí te adjunto el PDF de la propuesta y el comprobante por el abono de ${fCLP(planAbono)}. (Mis datos para la boleta: RUT, Nombres, Domicilio, Comuna). Gracias!`
                     : `¡Hola Yi! ✶ Tengo algunas dudas sobre la propuesta, ¿podemos conversar?`;
                 window.location.assign(`https://api.whatsapp.com/send?phone=56949873116&text=${encodeURIComponent(text)}`);
             };
 
             return (
-                <div className="text-ocd-black font-sans flex flex-col items-center relative min-h-screen">
+                <div className="text-ocd-black font-sans flex flex-col items-center relative min-h-screen overflow-x-hidden">
                     
                     {/* QUICK CART MODULE */}
                     {!isExporting && (
@@ -318,7 +328,7 @@
                             <div className={`cart-dropdown ${isCartOpen ? 'open' : ''}`}>
                                 <div className="flex justify-between items-center mb-5 border-b border-white/10 pb-4">
                                     <span className="font-mono text-[11px] font-bold tracking-[0.2em] uppercase text-zinc-400">System Cart</span>
-                                    <button onClick={() => setIsCartOpen(false)} className="text-zinc-500 hover:text-white p-2 -mr-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                                    <button onClick={() => setIsCartOpen(false)} className="text-zinc-500 hover:text-white p-2 -mr-2 active:scale-90 transition-transform"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
                                 </div>
                                 <div className="overflow-y-auto custom-scrollbar pr-2 space-y-2 flex-1 mb-3">
                                     {stats.details.map((item, idx) => (
@@ -339,19 +349,19 @@
                                         <span className="font-mono text-[10px] uppercase tracking-widest text-zinc-400">Inversión Final</span>
                                         <span className="text-4xl font-black text-white tracking-tighter leading-none">{fCLP(stats.final)}</span>
                                     </div>
-                                    <button onClick={() => document.getElementById('checkout-section').scrollIntoView({ behavior: 'smooth' })} className="w-full bg-ocd-green text-black font-mono text-[12px] font-bold py-4 rounded-xl uppercase tracking-widest hover:brightness-110 active:opacity-80 transition-all flex justify-center items-center gap-2">Ir a Finalizar</button>
+                                    <button onClick={() => document.getElementById('checkout-section').scrollIntoView({ behavior: 'smooth' })} className="w-full bg-ocd-green text-black font-mono text-[12px] font-bold py-4 rounded-xl uppercase tracking-widest hover:brightness-110 active:scale-95 active:opacity-80 transition-all flex justify-center items-center gap-2">Ir a Finalizar</button>
                                 </div>
                             </div>
-                            <button type="button" className="cart-bubble" onClick={() => setIsCartOpen(!isCartOpen)}>
+                            <div className="cart-bubble z-[100]" onClick={() => setIsCartOpen(!isCartOpen)}>
                                 <div className="flex flex-col items-start leading-none">
                                     <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-zinc-400 mb-1">Total Proyecto</span>
                                     <span className="text-lg md:text-xl font-black tracking-tight">{fCLP(stats.final)}</span>
                                 </div>
                                 <div className="w-px h-8 bg-white/20 mx-2"></div>
-                                <div className="bg-ocd-green text-black w-8 h-8 rounded-full flex items-center justify-center">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                <div className="bg-ocd-green text-black w-8 h-8 rounded-full flex items-center justify-center transition-transform active:scale-90">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className={`${isCartOpen ? 'rotate-180' : ''} transition-transform duration-300`}><polyline points="6 9 12 15 18 9"></polyline></svg>
                                 </div>
-                            </button>
+                            </div>
                         </div>
                     )}
 
@@ -426,7 +436,7 @@
                             </div>
                         </div>
 
-                        {/* LISTA DE SERVICIOS */}
+                        {/* LISTA DE SERVICIOS - ACORDEONES OPTIMIZADOS PARA TOUCH */}
                         <div className="mb-10 space-y-4">
                             {PHASES.map((phase) => {
                                 const selectedInPhase = phase.items.filter(i => selectedItems.has(i.id));
@@ -436,31 +446,29 @@
 
                                 return (
                                     <div key={phase.id} className="w-full border border-ocd-border rounded-xl overflow-hidden shadow-sm">
-                                        <div className="w-full flex justify-between items-center bg-ocd-gray px-5 py-3 no-print select-none">
-                                            <button
-                                                type="button"
-                                                className="flex items-center gap-4 flex-1 py-2 text-left touch-manipulation active:opacity-70"
-                                                onClick={() => togglePhase(phase.id)}
-                                            >
-                                                <div className={`transition-transform duration-300 shrink-0 ${isExpanded ? 'rotate-0' : '-rotate-90'}`}>
+                                        <div 
+                                            className="w-full flex justify-between items-center bg-ocd-gray px-5 py-4 no-print select-none cursor-pointer active:bg-zinc-200 transition-colors"
+                                            onClick={() => togglePhase(phase.id)}
+                                        >
+                                            <div className="flex items-center gap-4 flex-1">
+                                                <div className={`transition-transform duration-300 ${isExpanded ? 'rotate-0' : '-rotate-90'}`}>
                                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="6 9 12 15 18 9"></polyline></svg>
                                                 </div>
                                                 <div className="font-bold text-ocd-black text-[14px] uppercase tracking-wide leading-none">{phase.title}</div>
                                                 <span className={`font-mono text-[9px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-tighter ${phase.color}`}>{phase.tag}</span>
-                                            </button>
-                                            <div className="flex items-center gap-4 shrink-0 ml-2">
+                                            </div>
+                                            <div className="flex items-center gap-6">
                                                 <div className="font-mono text-[13px] text-ocd-textMuted font-bold">{fCLP(phasePrice)}</div>
                                                 <button 
-                                                    type="button"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         const next = new Set(selectedItems);
                                                         phase.items.forEach(item => { if (isAllSelected) next.delete(item.id); else next.add(item.id); });
                                                         setSelectedItems(next);
                                                     }}
-                                                    className={`w-8 h-8 rounded border flex items-center justify-center shrink-0 transition-colors touch-manipulation active:opacity-70 ${isAllSelected ? 'bg-ocd-green border-ocd-green text-black' : 'border-gray-400 bg-white'}`}
+                                                    className={`w-6 h-6 rounded border flex items-center justify-center shrink-0 transition-all active:scale-90 ${isAllSelected ? 'bg-ocd-green border-ocd-green text-black' : 'border-gray-400 bg-white'}`}
                                                 >
-                                                    {isAllSelected && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4"><polyline points="20 6 9 17 4 12"></polyline></svg>}
+                                                    {isAllSelected && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" className="md:w-[10px] md:h-[10px]"><polyline points="20 6 9 17 4 12"></polyline></svg>}
                                                 </button>
                                             </div>
                                         </div>
@@ -476,23 +484,18 @@
                                                     const isSelected = selectedItems.has(item.id);
                                                     const price = item.priceOverride !== undefined ? item.priceOverride : item.hours * BASE_RATE;
                                                     return (
-                                                        <button
-                                                            type="button"
-                                                            key={item.id}
-                                                            onClick={() => toggleItem(item.id)}
-                                                            className={`w-full text-left p-5 md:p-3 grid grid-cols-1 md:grid-cols-12 gap-4 touch-manipulation transition-colors active:opacity-70 ${isSelected ? 'hover:bg-green-50' : 'opacity-40 grayscale print:hidden'}`}
-                                                        >
+                                                        <div key={item.id} onClick={() => toggleItem(item.id)} className={`p-5 md:p-3 grid grid-cols-1 md:grid-cols-12 gap-4 cursor-pointer transition-colors active:bg-green-50 ${isSelected ? 'hover:bg-green-50' : 'opacity-40 grayscale print:hidden'}`}>
                                                             <div className="md:col-span-4 flex items-start gap-4">
-                                                                <div className={`no-print w-6 h-6 rounded-sm border flex items-center justify-center shrink-0 mt-0.5 ${isSelected ? 'bg-ocd-green border-ocd-green text-black' : 'border-gray-300 bg-white'}`}>
-                                                                    {isSelected && <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4"><polyline points="20 6 9 17 4 12"></polyline></svg>}
+                                                                <div className={`no-print w-5 h-5 rounded-sm border flex items-center justify-center shrink-0 mt-0.5 transition-all ${isSelected ? 'bg-ocd-green border-ocd-green text-black scale-100' : 'border-gray-300 scale-95'}`}>
+                                                                    {isSelected && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" className="md:w-2 md:h-2"><polyline points="20 6 9 17 4 12"></polyline></svg>}
                                                                 </div>
                                                                 <span className="font-bold md:font-medium text-ocd-black text-[15px] md:text-sm leading-tight">{item.name}{item.isEssential && <span className="text-ocd-green font-bold ml-1">*</span>}</span>
                                                             </div>
                                                             <div className="md:col-span-6 pl-10 md:pl-0 text-[14px] md:text-xs text-gray-500 leading-snug">{item.desc}</div>
                                                             <div className="md:col-span-2 pl-10 md:pl-0 text-left md:text-right font-mono text-[13px] md:text-xs text-ocd-textMuted font-bold uppercase">
-                                                                <span className="md:hidden text-zinc-400 mr-2">Inversión:</span>{price > 0 ? fCLP(price) : 'Cortesía'}
+                                                                <span className="md:hidden text-zinc-400 mr-2">Inversión:</span>{fCLP(price)}
                                                             </div>
-                                                        </button>
+                                                        </div>
                                                     );
                                                 })}
                                             </div>
@@ -540,8 +543,8 @@
                             </div>
                         </div>
 
-                        {/* SECCIÓN DE PAGO */}
-                        <div id="checkout-section" className="mb-12 bg-[#0D0D0D] text-white border border-black shadow-2xl rounded-[2.5rem] overflow-hidden relative no-print pb-12">
+                        {/* SECCIÓN DE PAGO - COMPOSICIÓN DE RUTAS OPTIMIZADA PARA MOBILE */}
+                        <div id="checkout-section" className="mb-12 bg-[#0D0D0D] text-white border border-black shadow-2xl rounded-[2.5rem] overflow-hidden relative no-print pb-12 z-10">
                             <div className="relative z-20">
                                 <div className="p-10 md:p-14 flex flex-col items-center text-center">
                                     <span className="font-mono text-[11px] text-ocd-green font-bold tracking-widest uppercase mb-6 flex items-center gap-2.5">
@@ -553,16 +556,17 @@
                                     </p>
                                 </div>
                                 
-                                <div className="px-6 md:px-14 flex flex-col gap-6 items-stretch mb-12">
+                                <div className="px-6 md:px-14 flex flex-col gap-6 items-stretch mb-12 relative z-[30]">
+                                    {/* Ruta 01 Selector */}
                                     <button 
                                         type="button"
                                         onClick={() => setSelectedPlan('01')} 
-                                        className={`w-full text-left border p-6 md:p-8 rounded-[2rem] transition-all duration-300 relative select-none outline-none group touch-manipulation ${selectedPlan === '01' ? 'border-ocd-green bg-ocd-green/5 shadow-[0_0_30px_rgba(74,222,128,0.1)]' : 'border-[#222] bg-[#111] opacity-70 hover:opacity-100 hover:border-zinc-700'}`}
+                                        className={`w-full text-left border p-6 md:p-8 rounded-[2rem] transition-all duration-300 relative select-none outline-none group active:scale-[0.98] z-[40] ${selectedPlan === '01' ? 'border-ocd-green bg-ocd-green/5 shadow-[0_0_30px_rgba(74,222,128,0.15)]' : 'border-zinc-800 bg-[#111] opacity-70 hover:opacity-100 hover:border-zinc-700'}`}
                                     >
                                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 w-full">
                                             <div className="flex items-center gap-5">
                                                 <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${selectedPlan === '01' ? 'border-ocd-green' : 'border-zinc-700'}`}>
-                                                    {selectedPlan === '01' && <div className="w-3.5 h-3.5 bg-ocd-green rounded-full"></div>}
+                                                    {selectedPlan === '01' && <div className="w-3.5 h-3.5 bg-ocd-green rounded-full animate-fade-in"></div>}
                                                 </div>
                                                 <div>
                                                     <span className={`block font-bold text-[20px] md:text-[22px] leading-none mb-2 ${selectedPlan === '01' ? 'text-ocd-green' : 'text-zinc-400'}`}>Ruta 01 (50/50)</span>
@@ -576,15 +580,16 @@
                                         </div>
                                     </button>
 
+                                    {/* Ruta 02 Selector */}
                                     <button 
                                         type="button"
                                         onClick={() => setSelectedPlan('02')} 
-                                        className={`w-full text-left border p-6 md:p-8 rounded-[2rem] transition-all duration-300 relative select-none outline-none group touch-manipulation ${selectedPlan === '02' ? 'border-ocd-green bg-ocd-green/5 shadow-[0_0_30px_rgba(74,222,128,0.1)]' : 'border-[#222] bg-[#111] opacity-70 hover:opacity-100 hover:border-zinc-700'}`}
+                                        className={`w-full text-left border p-6 md:p-8 rounded-[2rem] transition-all duration-300 relative select-none outline-none group active:scale-[0.98] z-[40] ${selectedPlan === '02' ? 'border-ocd-green bg-ocd-green/5 shadow-[0_0_30px_rgba(74,222,128,0.15)]' : 'border-zinc-800 bg-[#111] opacity-70 hover:opacity-100 hover:border-zinc-700'}`}
                                     >
                                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 w-full">
                                             <div className="flex items-center gap-5">
                                                 <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${selectedPlan === '02' ? 'border-ocd-green' : 'border-zinc-700'}`}>
-                                                    {selectedPlan === '02' && <div className="w-3.5 h-3.5 bg-ocd-green rounded-full"></div>}
+                                                    {selectedPlan === '02' && <div className="w-3.5 h-3.5 bg-ocd-green rounded-full animate-fade-in"></div>}
                                                 </div>
                                                 <div>
                                                     <span className={`block font-bold text-[20px] md:text-[22px] leading-none mb-2 ${selectedPlan === '02' ? 'text-ocd-green' : 'text-zinc-400'}`}>Ruta 02 (30/30/40)</span>
@@ -599,9 +604,10 @@
                                     </button>
                                 </div>
 
-                                <div className="px-6 md:px-14 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                                {/* ACCIONES FINALES - MOBILE READY BOTONES */}
+                                <div className="px-6 md:px-14 grid grid-cols-1 md:grid-cols-2 gap-8 items-start relative z-[30]">
                                     <div className="space-y-4">
-                                        <div className="bg-[#111] p-8 rounded-3xl border border-[#222]">
+                                        <div className="bg-[#111] p-8 rounded-3xl border border-zinc-800">
                                             <span className="font-mono text-[11px] text-zinc-500 font-bold uppercase tracking-[0.2em] mb-6 block">Banca / Recepción</span>
                                             <div className="text-[14px] text-zinc-400 space-y-2 font-mono">
                                                 <strong className="text-white block mb-4 font-sans text-xl tracking-tight leading-none">Javiera Saint-Jour</strong>
@@ -611,21 +617,18 @@
                                                 <span className="block mt-4 text-zinc-300 font-bold">openclubdesign@gmail.com</span>
                                             </div>
                                         </div>
-                                        <div className="bg-ocd-green/10 border border-ocd-green/20 p-6 rounded-3xl text-center">
-                                            <p className="text-[14px] text-zinc-300 leading-relaxed font-medium mb-5">¿Dudas sobre el proceso?</p>
-                                            <button onClick={() => handleWhatsApp('help')} className="bg-white text-black px-8 py-3 rounded-full font-bold text-[12px] uppercase tracking-widest hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2 w-full active:opacity-80">✶ Conversar ahora</button>
-                                        </div>
+                                        <button onClick={() => handleWhatsApp('help')} className="w-full bg-white text-black px-8 py-4 rounded-full font-bold text-[12px] uppercase tracking-widest transition-all active:scale-95 active:opacity-70 flex items-center justify-center gap-2">✶ Conversar ahora</button>
                                     </div>
 
                                     <div className="space-y-6">
-                                        <div className="p-8 bg-zinc-900/40 border border-[#222] rounded-3xl h-full flex flex-col justify-center">
+                                        <div className="p-8 bg-zinc-900/40 border border-zinc-800 rounded-3xl h-full flex flex-col justify-center">
                                             <p className="text-[13px] text-zinc-400 leading-relaxed mb-8">Una vez realizado el abono, descarga el PDF y notifícanos para iniciar la fase operativa.</p>
                                             <div className="flex flex-col gap-4">
-                                                <button onClick={handleDownloadPDF} disabled={isExporting} className={`bg-white text-black font-mono text-[13px] font-black py-5 rounded-2xl uppercase tracking-widest hover:bg-zinc-200 transition-all flex justify-center items-center gap-3 touch-manipulation ${isExporting ? 'opacity-50' : ''}`}>
+                                                <button onClick={handleDownloadPDF} disabled={isExporting} className={`bg-white text-black font-mono text-[13px] font-black py-5 rounded-2xl uppercase tracking-widest transition-all active:scale-95 active:opacity-70 flex justify-center items-center gap-3 ${isExporting ? 'opacity-50' : ''}`}>
                                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                                                     {isExporting ? 'Procesando...' : '1. Descargar PDF'}
                                                 </button>
-                                                <button onClick={() => handleWhatsApp('payment')} className="bg-ocd-green text-black font-mono text-[13px] font-black py-5 rounded-2xl uppercase tracking-widest hover:brightness-110 transition-all flex justify-center items-center gap-3 active:opacity-80 touch-manipulation">
+                                                <button onClick={() => handleWhatsApp('payment')} className="bg-ocd-green text-black font-mono text-[13px] font-black py-5 rounded-2xl uppercase tracking-widest transition-all active:scale-95 active:opacity-70 flex justify-center items-center gap-3">
                                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
                                                     2. Notificar vía WhatsApp
                                                 </button>
@@ -634,7 +637,7 @@
                                     </div>
                                 </div>
 
-                                <div className="mt-16 text-center border-t border-[#222] pt-12">
+                                <div className="mt-16 text-center border-t border-zinc-800 pt-12">
                                     <span className="block text-white text-[14px] font-bold tracking-[0.2em] uppercase mb-3">muchas gracias ♡</span>
                                     <span className="block text-ocd-green text-3xl md:text-4xl font-black tracking-tighter italic drop-shadow-[0_0_12px_rgba(74,222,128,0.4)]">~✷♡♡ será hermoso ♡♡✷~</span>
                                 </div>
@@ -649,31 +652,38 @@
                                 <li className="flex items-start gap-5">
                                     <div className="text-ocd-green mt-1 shrink-0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
                                     <div>
-                                        <strong className="block text-ocd-black text-[18px] uppercase tracking-tight mb-1">Logotipo oficial</strong>
-                                        <span className="text-zinc-600 text-[15px] leading-relaxed font-medium">Suministro de archivos maestros vectorizados para impresión profesional (AI, EPS, PDF) y versiones optimizadas para despliegue web (PNG, JPG, SVG). Incluye variantes cromáticas y reducciones técnicas.</span>
+                                        <strong className="block text-ocd-black text-[18px] uppercase tracking-tight mb-1.5 leading-none">Logotipo oficial</strong>
+                                        <span className="text-zinc-600 text-[15px] leading-relaxed font-medium">
+                                            Suministro de archivos maestros vectorizados para impresión profesional (AI, EPS, PDF) y versiones optimizadas para despliegue web (PNG, JPG, SVG). Incluye variantes cromáticas y reducciones técnicas.
+                                        </span>
                                     </div>
                                 </li>
                                 <li className="flex items-start gap-5">
                                     <div className="text-ocd-green mt-1 shrink-0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
                                     <div>
-                                        <strong className="block text-ocd-black text-[16px] uppercase tracking-tight mb-1">Manual de marca</strong>
-                                        <span className="text-zinc-600 text-[15px] leading-relaxed font-medium">Guía técnica integral que detalla: códigos de color (HEX/CMYK), uso de familias tipográficas, iconografía secundaria, dirección fotográfica y normas de aplicación para consistencia visual absoluta.</span>
+                                        <strong className="block text-ocd-black text-[18px] uppercase tracking-tight mb-1.5 leading-none">Manual de marca</strong>
+                                        <span className="text-zinc-600 text-[15px] leading-relaxed font-medium">
+                                            Guía técnica integral que detalla: códigos de color (HEX/CMYK), uso de familias tipográficas, iconografía secundaria, dirección fotográfica y normas de aplicación para garantizar consistencia visual absoluta en cualquier plataforma.
+                                        </span>
                                     </div>
                                 </li>
                                 <li className="flex items-start gap-5">
                                     <div className="text-ocd-green mt-1 shrink-0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
                                     <div>
-                                        <strong className="block text-ocd-black text-[16px] uppercase tracking-tight mb-1">Archivos de producción</strong>
-                                        <span className="text-zinc-600 text-[15px] leading-relaxed font-medium">Documentos finales listos para envío directo a imprenta y proveedores externos (Maquetación de menú, stickers y papelería varia según lo contratado).</span>
+                                        <strong className="block text-ocd-black text-[18px] uppercase tracking-tight mb-1.5 leading-none">Archivos de producción</strong>
+                                        <span className="text-zinc-600 text-[15px] leading-relaxed font-medium">
+                                            Documentos finales listos para envío directo a imprenta y proveedores externos (Maquetación de menú, 3 variantes de stickers y papelería corporativa contratada). Formatos PDF/X-1a con sangrados y marcas de corte técnicas.
+                                        </span>
                                     </div>
                                 </li>
                             </ul>
                         </div>
 
-                        {/* FIRMAS Y SELLO */}
+                        {/* FIRMAS & SELLO - SIN LÍNEAS DE INTERFERENCIA */}
                         <div className="mt-36 flex flex-col md:flex-row justify-between items-center md:items-end pt-24 gap-10 relative pb-10">
-                            {/* Sello: en mobile va centrado arriba, en desktop va a la derecha */}
-                            <div className="w-32 h-32 md:w-44 md:h-44 text-ocd-green opacity-90 pointer-events-none mix-blend-multiply z-0 mx-auto md:absolute md:mx-0 md:right-[15%] md:-top-20 order-first md:order-none">
+                            
+                            {/* Rotating Authorization Seal */}
+                            <div className="absolute top-10 md:-top-20 left-1/2 md:left-auto md:right-[15%] -translate-x-1/2 md:translate-x-0 w-32 h-32 md:w-44 h-44 text-ocd-green opacity-90 pointer-events-none mix-blend-multiply z-0">
                                 <svg viewBox="0 0 100 100" className="w-full h-full animate-[spin_15s_linear_infinite]">
                                     <defs><path id="sealPath" d="M 50, 50 m -36, 0 a 36,36 0 1,1 72,0 a 36,36 0 1,1 -72,0" /></defs>
                                     <text fontSize="10" fontWeight="bold" fill="currentColor" className="font-mono uppercase tracking-widest">
@@ -684,10 +694,14 @@
                             </div>
                             
                             <div className="w-full md:w-56 text-center order-2 md:order-1 relative z-10">
-                                <div className="border-b border-black mb-3 pb-12 w-3/4 mx-auto md:w-full relative flex justify-center items-end opacity-20"><span className="font-black text-[11px] tracking-tighter uppercase text-ocd-black leading-none tracking-[0.2em]">OPEN SYSTEM</span></div>
+                                <div className="border-b border-black mb-3 pb-8 md:pb-12 w-3/4 mx-auto md:w-full relative flex justify-center items-end opacity-20">
+                                    <span className="font-black text-[11px] tracking-tighter uppercase text-ocd-black leading-none tracking-[0.2em]">OPEN SYSTEM</span>
+                                </div>
                                 <div className="font-bold text-ocd-black uppercase text-[10px] md:text-[11px] tracking-[0.3em] font-sans leading-none">Aprobación Cliente</div>
                             </div>
-                            <div className="order-3 md:order-2 font-mono text-[10px] text-zinc-400 tracking-[0.2em] uppercase font-bold bg-white/80 backdrop-blur-sm px-4 py-1.5 rounded relative z-10">Open Club System v.56.0</div>
+                            <div className="order-3 md:order-2 font-mono text-[10px] text-zinc-400 tracking-[0.2em] uppercase font-bold bg-white/80 backdrop-blur-sm px-4 py-1.5 rounded relative z-10">
+                                Open Club System v.56.0
+                            </div>
                             <div className="w-full md:w-72 text-center md:text-right order-1 md:order-3 relative z-10">
                                 <div className="border-b border-black mb-3 pb-12 w-3/4 mx-auto md:w-full text-ocd-green font-mono text-[12px] italic font-bold uppercase tracking-widest">Auth_YI_Director</div>
                                 <div className="font-bold text-ocd-black text-[16px] md:text-lg uppercase tracking-tighter leading-none inline-block mt-1.5">Yi</div>
