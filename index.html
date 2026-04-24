@@ -77,19 +77,15 @@
     .service-row:hover { background: rgba(0,214,79,0.03) !important; }
     .service-row.selected:hover { background: rgba(0,214,79,0.06) !important; }
 
-    /* Bottom bar spacing */
-    .page{ padding-bottom: 72px; }
-    @media(min-width:768px){ .page{ padding-bottom: 80px; } }
-
     @keyframes spin{ to{ transform:rotate(360deg); } }
 
-    /* WhatsApp / download buttons — touch targets mínimos iOS */
-    .action-btn{ min-height: 44px; min-width: 44px; }
+    /* Touch targets mínimos iOS */
+    .action-btn{ min-height: 44px; }
 
     @media print{
       .no-print{ display:none !important; }
       body{ background:white; }
-      .page{ box-shadow:none; margin:0; width:100%; padding-bottom:0; }
+      .page{ box-shadow:none; margin:0; width:100%; }
     }
   </style>
 </head>
@@ -259,7 +255,6 @@ function App() {
   const [approved,  setApproved]  = useState(false);
   const [notes,     setNotes]     = useState('');
   const [exporting,   setExporting]   = useState(false);
-  const [isCartOpen,  setIsCartOpen]  = useState(false);
   const approvalId  = useRef(Math.random().toString(36).substring(2,8).toUpperCase());
   const checkoutRef = useRef(null);
 
@@ -613,134 +608,6 @@ function App() {
     <div className="relative">
       {PdfMaster}
 
-      {/* ── BOTTOM BAR (full-width, mobile-first) ─────────────────────── */}
-
-      {/* Backdrop */}
-      {isCartOpen && (
-        <div
-          className="fixed inset-0 bg-black/65 z-40 no-print"
-          style={{backdropFilter:'blur(2px)', WebkitBackdropFilter:'blur(2px)'}}
-          onClick={()=>setIsCartOpen(false)}
-        />
-      )}
-
-      {/* Bar + Panel container */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 no-print">
-
-        {/* ── Panel drawer (desliza desde la barra) ── */}
-        <div className={`transition-all duration-300 ease-out ${isCartOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
-          <div className="bg-black border border-white/10 border-b-0 rounded-t-3xl shadow-2xl flex flex-col"
-            style={{maxHeight:'72vh'}}>
-
-            {/* Handle */}
-            <div className="flex justify-center pt-3 pb-1 shrink-0">
-              <div className="w-10 h-1 bg-white/20 rounded-full"></div>
-            </div>
-
-            {/* Header */}
-            <div className="flex justify-between items-center px-6 pt-2 pb-4 border-b border-white/10 shrink-0">
-              <div>
-                <div className="font-mono text-[8px] text-zinc-500 uppercase tracking-[0.25em] font-bold mb-0.5">Plan activo</div>
-                <div className="font-black text-white text-[14px] uppercase tracking-tight leading-none">{calc.count} servicios seleccionados</div>
-              </div>
-              <button onClick={()=>setIsCartOpen(false)}
-                className="text-zinc-600 hover:text-white transition-colors rounded-full hover:bg-white/5 p-2 -mr-1 active:scale-90">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-              </button>
-            </div>
-
-            {/* Servicios */}
-            <div className="overflow-y-auto flex-1 px-6 py-4 space-y-3"
-              style={{scrollbarWidth:'thin', scrollbarColor:'#00D64F #1a1a1a', WebkitOverflowScrolling:'touch'}}>
-              {calc.lines.length === 0
-                ? <p className="text-[11px] text-zinc-600 italic text-center py-6">Sin servicios seleccionados</p>
-                : calc.lines.map((l,i)=>(
-                  <div key={i} className="flex justify-between items-start gap-3">
-                    <span className="text-[11px] text-zinc-300 leading-snug">{l.name}</span>
-                    <span className="font-mono text-[10px] text-ocd-green shrink-0 font-bold">{fCLP(l.price)}</span>
-                  </div>
-                ))
-              }
-            </div>
-
-            {/* Desglose */}
-            <div className="px-6 py-4 border-t border-white/10 space-y-2 shrink-0">
-              <div className="flex justify-between font-mono text-[10px] text-zinc-500">
-                <span>Nominal</span><span>{fCLP(calc.raw)}</span>
-              </div>
-              <div className="flex justify-between font-mono text-[10px] text-ocd-green font-bold">
-                <span>Open Ticket (−20%)</span><span>−{fCLP(calc.discount)}</span>
-              </div>
-              <div className="flex justify-between items-end pt-3 border-t border-white/10">
-                <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest">Total final</span>
-                <span className="text-[26px] font-black text-white tracking-tighter leading-none">{fCLP(calc.gross)}</span>
-              </div>
-            </div>
-
-            {/* Acción principal del panel */}
-            <div className="px-6 pb-5 pt-2 shrink-0">
-              <button
-                onClick={()=>{ setIsCartOpen(false); setTimeout(()=>checkoutRef.current?.scrollIntoView({behavior:'smooth',block:'start'}),150); }}
-                className="w-full bg-ocd-green text-black font-mono text-[11px] font-black py-4 rounded-xl uppercase tracking-widest transition-all active:scale-95 hover:brightness-110 flex items-center justify-center gap-2">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="9 18 15 12 9 6"/></svg>
-                Ver plan de pago
-              </button>
-            </div>
-
-          </div>
-        </div>
-
-        {/* ── Barra fija inferior ── */}
-        <div className="bg-black border-t border-white/10 flex items-center gap-2.5 px-4"
-          style={{paddingTop:'10px', paddingBottom:'max(10px, env(safe-area-inset-bottom))'}}>
-
-          {/* Total + toggle (ocupa el espacio libre) */}
-          <button
-            onClick={()=>setIsCartOpen(c=>!c)}
-            className="flex-1 flex items-center gap-2.5 min-w-0 active:opacity-70 transition-opacity py-1">
-            <div className="min-w-0">
-              <div className="font-mono text-[7px] text-zinc-500 uppercase tracking-[0.2em] font-bold leading-none mb-0.5">Total proyecto</div>
-              <div className="text-[19px] font-black text-white tracking-tighter leading-none truncate">{fCLP(calc.gross)}</div>
-            </div>
-            <div className={`flex-shrink-0 w-6 h-6 rounded-full border border-ocd-green/40 bg-ocd-green/10 flex items-center justify-center transition-transform duration-300 ${isCartOpen ? 'rotate-180' : ''}`}>
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#00D64F" strokeWidth="3.5">
-                <polyline points="6 9 12 15 18 9"/>
-              </svg>
-            </div>
-          </button>
-
-          {/* Separador */}
-          <div className="w-px h-8 bg-white/10 shrink-0"></div>
-
-          {/* Botón PDF */}
-          <button
-            onClick={downloadPDF}
-            disabled={exporting}
-            className={`flex items-center gap-1.5 bg-zinc-800 hover:bg-zinc-700 text-white font-mono text-[10px] font-black px-4 py-3 rounded-xl uppercase tracking-widest transition-all active:scale-95 shrink-0 ${exporting ? 'opacity-50' : ''}`}
-          >
-            {exporting
-              ? <svg style={{animation:'spin 1s linear infinite'}} width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-              : <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            }
-            <span>{exporting ? '…' : 'PDF'}</span>
-          </button>
-
-          {/* Botón WhatsApp */}
-          <button
-            onClick={()=>sendWhatsApp('payment')}
-            className="flex items-center gap-1.5 bg-ocd-green text-black font-mono text-[10px] font-black px-4 py-3 rounded-xl uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all shrink-0"
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-            </svg>
-            <span className="hidden xs:inline">WA</span>
-            <span className="hidden sm:inline"> Notificar</span>
-          </button>
-
-        </div>
-      </div>
 
       <div className="page fade-up">
 
@@ -899,7 +766,7 @@ function App() {
             <div className="flex items-start gap-3 px-5 py-4 flex-1">
               <svg className="shrink-0 mt-0.5 text-ocd-green" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
               <p className="text-[12.5px] text-zinc-600 leading-relaxed">
-                <strong className="text-black font-black">Totales en tiempo real</strong> — al activar o desactivar filas el precio, el PDF y el módulo flotante se actualizan al instante.
+                <strong className="text-black font-black">Totales en tiempo real</strong> — al activar o desactivar filas el precio y el resumen final se actualizan al instante.
               </p>
             </div>
           </div>
@@ -1056,60 +923,6 @@ function App() {
           </div>
         </section>
 
-        {/* ── NOTES ───────────────────────────────────────────────────── */}
-        <section className="px-8 md:px-14 py-8 border-t border-ocd-border no-print">
-          <div className="font-mono text-[10px] text-ocd-muted uppercase tracking-widest font-bold mb-1">/// Observaciones del cliente</div>
-          <p className="text-[12px] text-zinc-400 mb-3">Estos comentarios quedarán incluidos en el PDF de cotización.</p>
-          <textarea
-            value={notes}
-            onChange={e=>setNotes(e.target.value)}
-            rows={4}
-            placeholder="Escribe aquí requerimientos especiales, dudas específicas o detalles adicionales para el proyecto…"
-            className="w-full bg-ocd-gray border border-ocd-border rounded-2xl p-5 text-[14px] text-zinc-700 placeholder:text-zinc-300 focus:outline-none focus:border-ocd-green transition-colors"
-          />
-        </section>
-
-        {/* ── SIGNATURES ──────────────────────────────────────────────── */}
-        <section className="px-8 md:px-14 py-12 border-t border-ocd-border flex flex-col md:flex-row justify-between items-center md:items-end gap-12 relative">
-          {/* Client approval */}
-          <div className={`flex-1 w-full md:w-auto p-6 rounded-3xl border-2 transition-all duration-500 ${approved?'border-ocd-green bg-ocd-green/5 shadow-lg':'border-ocd-border bg-ocd-gray'}`}>
-            {approved && (
-              <div className="mb-5 fade-up">
-                <div className="inline-block border-4 border-ocd-green text-ocd-green font-black text-2xl px-4 py-1 stamp-in tracking-widest">APPROVED</div>
-                <div className="font-mono text-[9px] text-ocd-green mt-2 uppercase tracking-[0.2em] font-bold">
-                  ID: {approvalId.current} · {new Date().toLocaleDateString('es-CL')}
-                </div>
-              </div>
-            )}
-            <button
-              onClick={()=>setApproved(a=>!a)}
-              className={`w-full py-5 px-6 rounded-2xl font-mono text-[13px] font-black uppercase tracking-widest transition-all duration-300 border-2 ${approved
-                ? 'bg-ocd-green text-black border-ocd-green shadow-[0_0_28px_rgba(0,214,79,.5)]'
-                : 'bg-black text-ocd-green border-ocd-green shadow-[0_0_0_4px_rgba(0,214,79,.12)] hover:shadow-[0_0_0_6px_rgba(0,214,79,.2)] hover:scale-[1.01] active:scale-[0.99]'
-              }`}
-              style={!approved ? {animation:'pulseGreen 2s infinite'} : {}}
-            >
-              {approved ? '✓ Propuesta aprobada' : '→ Clic para aprobar la propuesta'}
-            </button>
-            <div className="mt-2.5 text-center font-mono text-[9px] text-zinc-400 uppercase tracking-widest">Aprobación digital · genera ID de contrato</div>
-          </div>
-
-          {/* Studio signature */}
-          <div className="flex-1 w-full md:w-auto flex flex-col items-center md:items-end text-center md:text-right">
-            <div className="relative mb-5 w-28 h-28">
-              <svg className="w-full h-full text-ocd-green seal-ring opacity-80" viewBox="0 0 100 100">
-                <defs><path id="sp" d="M 50,50 m -35,0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0"/></defs>
-                <text fontSize="9" fontWeight="bold" fill="currentColor" fontFamily="Space Mono">
-                  <textPath href="#sp" startOffset="0%">• OPEN CLUB • AUTHORIZED • OPEN CLUB • AUTHORIZED </textPath>
-                </text>
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center font-black text-6xl text-ocd-green leading-none" style={{pointerEvents:'none'}}>O</div>
-            </div>
-            <div className="border-b-2 border-black pb-3 mb-3 w-48 font-mono text-[12px] italic text-ocd-green font-bold uppercase tracking-widest">Auth_YI_Director</div>
-            <div className="font-black text-lg uppercase tracking-tighter text-black">Javiera Saint-Jour</div>
-            <div className="font-mono text-[10px] text-zinc-400 uppercase tracking-widest mt-1 font-bold">Dirección Creativa · Open Club</div>
-          </div>
-        </section>
 
         {/* ── CHECKOUT ────────────────────────────────────────────────── */}
         <section ref={checkoutRef} className="border-t-2 border-black no-print">
@@ -1220,6 +1033,66 @@ function App() {
                   </div>
                 </button>
               ))}
+            </div>
+          </div>
+
+          {/* ── NOTAS DEL CLIENTE ── */}
+          <div className="px-8 md:px-14 py-8 border-b border-ocd-border no-print">
+            <div className="font-mono text-[10px] text-ocd-muted uppercase tracking-widest font-bold mb-1">/// Observaciones del cliente</div>
+            <p className="text-[12px] text-zinc-400 mb-3">Estos comentarios quedarán incluidos en el PDF de cotización.</p>
+            <textarea
+              value={notes}
+              onChange={e=>setNotes(e.target.value)}
+              rows={4}
+              placeholder="Escribe aquí requerimientos especiales, dudas específicas o detalles adicionales para el proyecto…"
+              className="w-full bg-ocd-gray border border-ocd-border rounded-2xl p-5 text-[14px] text-zinc-700 placeholder:text-zinc-300 focus:outline-none focus:border-ocd-green transition-colors"
+            />
+          </div>
+
+          {/* ── APROBACIÓN & CONFORMIDAD ── */}
+          <div className="px-8 md:px-14 py-10 border-b border-ocd-border">
+            <div className="font-mono text-[10px] text-ocd-muted uppercase tracking-widest font-bold mb-6">/// Aprobación & Conformidad</div>
+            <div className="flex flex-col md:flex-row items-start md:items-end gap-8">
+
+              {/* Bloque aprobación cliente */}
+              <div className={`flex-1 w-full p-6 rounded-3xl border-2 transition-all duration-500 ${approved?'border-ocd-green bg-ocd-green/5 shadow-lg':'border-ocd-border bg-ocd-gray'}`}>
+                {approved && (
+                  <div className="mb-5 fade-up">
+                    <div className="inline-block border-4 border-ocd-green text-ocd-green font-black text-2xl px-4 py-1 stamp-in tracking-widest">APPROVED</div>
+                    <div className="font-mono text-[9px] text-ocd-green mt-2 uppercase tracking-[0.2em] font-bold">
+                      ID: {approvalId.current} · {new Date().toLocaleDateString('es-CL')}
+                    </div>
+                  </div>
+                )}
+                <button
+                  onClick={()=>setApproved(a=>!a)}
+                  className={`action-btn w-full py-5 px-6 rounded-2xl font-mono text-[13px] font-black uppercase tracking-widest transition-all duration-300 border-2 select-none ${approved
+                    ? 'bg-ocd-green text-black border-ocd-green shadow-[0_0_28px_rgba(0,214,79,.5)]'
+                    : 'bg-black text-ocd-green border-ocd-green shadow-[0_0_0_4px_rgba(0,214,79,.12)] hover:shadow-[0_0_0_6px_rgba(0,214,79,.2)] hover:scale-[1.01] active:scale-[0.99]'
+                  }`}
+                  style={!approved ? {animation:'pulseGreen 2s infinite', WebkitTapHighlightColor:'transparent'} : {WebkitTapHighlightColor:'transparent'}}
+                >
+                  {approved ? '✓ Propuesta aprobada' : '→ Clic para aprobar la propuesta'}
+                </button>
+                <div className="mt-2.5 text-center font-mono text-[9px] text-zinc-400 uppercase tracking-widest">Aprobación digital · genera ID de contrato</div>
+              </div>
+
+              {/* Sello del estudio */}
+              <div className="flex-shrink-0 flex flex-col items-center md:items-end text-center md:text-right">
+                <div className="relative mb-4 w-24 h-24">
+                  <svg className="w-full h-full text-ocd-green seal-ring opacity-80" viewBox="0 0 100 100">
+                    <defs><path id="sp" d="M 50,50 m -35,0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0"/></defs>
+                    <text fontSize="9" fontWeight="bold" fill="currentColor" fontFamily="Space Mono">
+                      <textPath href="#sp" startOffset="0%">• OPEN CLUB • AUTHORIZED • OPEN CLUB • AUTHORIZED </textPath>
+                    </text>
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center font-black text-5xl text-ocd-green leading-none" style={{pointerEvents:'none'}}>O</div>
+                </div>
+                <div className="border-b-2 border-black pb-2 mb-2 w-44 font-mono text-[11px] italic text-ocd-green font-bold uppercase tracking-widest">Auth_YI_Director</div>
+                <div className="font-black text-base uppercase tracking-tighter text-black">Javiera Saint-Jour</div>
+                <div className="font-mono text-[10px] text-zinc-400 uppercase tracking-widest mt-1 font-bold">Dirección Creativa · Open Club</div>
+              </div>
+
             </div>
           </div>
 
